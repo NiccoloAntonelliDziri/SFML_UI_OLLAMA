@@ -14,7 +14,6 @@ class OllamaState : public State {
 
         this->inputBox =
             MultilineText(this->data->assets.getFont(cst["fontName"]));
-        this->inputBox.write("AHAHAHHAHAHAHAHAHAHAHAHAH");
     }
     ~OllamaState() {
         if (this->ollamathread != nullptr) {

@@ -15,6 +15,7 @@ void MultilineText::draw(sf::RenderTarget &target,
 
 void MultilineText::write(const std::string &text) {
     this->text = text;
+
     this->lines.clear();
 
     int charCounter = 0;
@@ -22,15 +23,16 @@ void MultilineText::write(const std::string &text) {
     std::string line = "";
     for (char c : text) {
         if (charCounter == this->numberCharacterLimit || c == '\n') {
+
             sf::Text t;
             t.setFont(this->font);
             t.setString(line);
             t.setCharacterSize(this->characterSize);
             t.setFillColor(this->color);
-            // The 2 is for the spacing between lines
             t.setPosition(this->getPosition().x,
                           this->getPosition().y +
-                              lineCounter * (this->characterSize + 2));
+                              lineCounter *
+                                  (this->characterSize + this->lineSpacing));
             this->lines.push_back(t);
             lineCounter++;
             line = "";
@@ -48,10 +50,10 @@ void MultilineText::write(const std::string &text) {
         t.setString(line);
         t.setCharacterSize(this->characterSize);
         t.setFillColor(this->color);
-        // The 2 is for the spacing between lines
         t.setPosition(this->getPosition().x,
                       this->getPosition().y +
-                          lineCounter * (this->characterSize + 2));
+                          lineCounter *
+                              (this->characterSize + this->lineSpacing));
         this->lines.push_back(t);
     }
 }
@@ -82,4 +84,15 @@ sf::FloatRect MultilineText::getGlobalBounds() const {
         bounds.height += line.getGlobalBounds().height;
     }
     return bounds;
+}
+void MultilineText::setLineSpacing(int lineSpacing) {
+    this->lineSpacing = lineSpacing;
+    if (this->lines.size() <= 1) {
+        return;
+    }
+    for (int i = 1; i < this->lines.size(); i++) {
+        this->lines[i].setPosition(this->lines[i].getPosition().x,
+                                   this->lines[i - 1].getPosition().y +
+                                       this->characterSize + this->lineSpacing);
+    }
 }

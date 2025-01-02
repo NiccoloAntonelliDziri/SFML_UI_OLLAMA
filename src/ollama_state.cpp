@@ -29,6 +29,9 @@ void OllamaState::init() {
     sf::Vector2u screen = this->data->window.getSize();
 
     sf::Vector2f pos(100, screen.y - 200);
+    // this->inputBox.setPosition(pos);
+    this->inputBox.write(
+        "AutrhgtrhrhytdhjdezfezezfrezfcAHAHHAHAHAHAHAHAHAHAHAH");
 
     ollama::show_requests(true);
     ollama::show_replies(true);
@@ -44,10 +47,8 @@ void OllamaState::handleInput() {
         }
         if (event.type == sf::Event::TextEntered) {
 
-            this->inputBox.setPosition(200, 200);
-            this->inputBox.setCharacterSize(40);
             this->inputBox.setColor(sf::Color::Blue);
-            this->inputBox.rotate(20);
+            this->inputBox.setLineSpacing(0);
             this->inputBox.write("AJIOHDHUIIFNGZEFUEGYZFNIEGZYIFNGRZYNIFEZYFNIR"
                                  "FUNOEZYOFNEZYONFY\nFNEZFOGEZ7OIFG");
 

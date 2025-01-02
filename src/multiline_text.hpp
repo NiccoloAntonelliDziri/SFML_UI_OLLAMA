@@ -12,6 +12,7 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
           numberCharacterLimit(numberCharacterLimit) {
 
         this->color = sf::Color::Black;
+        this->lineSpacing = 0;
     }
 
     // It is pretty when the font is monospaced because the text is aligned
@@ -20,6 +21,7 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
 
     void setFont(const sf::Font &font);
     void setCharacterSize(int characterSize);
+    void setLineSpacing(int lineSpacing);
     void setColor(const sf::Color &color);
 
     sf::FloatRect getGlobalBounds() const;
