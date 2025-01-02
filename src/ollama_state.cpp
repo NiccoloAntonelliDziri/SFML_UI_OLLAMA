@@ -1,7 +1,6 @@
 #include "ollama_state.hpp"
 
 #include "app.hpp"
-#include "textbox.hpp"
 
 namespace llm {
 std::ostringstream response;
@@ -29,20 +28,10 @@ void on_receive_response(const ollama::response &response) {
 void OllamaState::init() {
     sf::Vector2u screen = this->data->window.getSize();
 
-    sf::Vector2f size(screen.x - 2 * 100, 3 * (20 + 2));
-    // this->textBox = TextBox(20, size, sf::Color::Black, true);
-
     sf::Vector2f pos(100, screen.y - 200);
-    // this->textBox.setPosition(pos);
-    // this->textBox.setFont(
-    //     this->data->assets.getFont(constants::font::ubuntuMonoRegular));
-    // this->textBox.setLimit(true, 2 * 107);
 
-    // Calculer les valeurs en fonction de la taille de la fenetre
-    // ajuster ces valeurs pour placer la view au bon endroit
-    // this->chatView = sf::View({200.f, 200.f}, {300.f, 200.f});
-    // Viewpoint centré, a moitié de taille de la fenetre
-    // this->chatView.setViewport(sf::FloatRect({0.25f, 0.25f}, {0.5f, 0.5f}));
+    ollama::show_requests(true);
+    ollama::show_replies(true);
 
     this->response_callback = on_receive_response;
 }
@@ -54,6 +43,13 @@ void OllamaState::handleInput() {
             this->data->window.close();
         }
         if (event.type == sf::Event::TextEntered) {
+
+            this->inputBox.setPosition(200, 200);
+            this->inputBox.setCharacterSize(40);
+            this->inputBox.setColor(sf::Color::Blue);
+            this->inputBox.rotate(20);
+            this->inputBox.write("AJIOHDHUIIFNGZEFUEGYZFNIEGZYIFNGRZYNIFEZYFNIR"
+                                 "FUNOEZYOFNEZYONFY\nFNEZFOGEZ7OIFG");
 
             // this->textBox.typedOn(event);
             //
@@ -94,15 +90,7 @@ void OllamaState::handleInput() {
         }
     }
 }
-void OllamaState::draw(float dt) {
-    // this->textBox.draw(this->data->window);
-
-    // this->data->window.setView(this->chatView);
-    //
-    // this->data->window.draw(this->circle);
-    //
-    // this->data->window.setView(this->data->window.getDefaultView());
-}
+void OllamaState::draw(float dt) { this->data->window.draw(this->inputBox); }
 void OllamaState::update(float dt) {
     if (llm::isStreaming) {
         // affiche seulement quand un nouveau token arrive

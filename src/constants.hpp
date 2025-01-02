@@ -44,7 +44,7 @@ class Constants {
         file >> this->j;
 
         // print the JSON object
-        std::cout << this->j.dump(4) << std::endl;
+        // std::cout << this->j.dump(4) << std::endl;
     }
 
     template <typename T = std::string> T get(std::string key) const {

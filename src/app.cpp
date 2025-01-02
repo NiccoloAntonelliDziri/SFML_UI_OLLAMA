@@ -5,8 +5,6 @@
 App::App(int width, int height, std::string title) {
     sf::ContextSettings settings;
 
-    std::cout << "Before creating window" << std::endl;
-
     settings.antialiasingLevel = cst.get<int>("antiAliasingLevel");
 
     this->data->window.create(sf::VideoMode(width, height), title,
@@ -32,7 +30,7 @@ App::~App() {
 
 void App::run() {
 
-    std::cout << "App::run()" << std::endl;
+    std::cout << "Running" << std::endl;
 
     float newtime;
     float framtime;

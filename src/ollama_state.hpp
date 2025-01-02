@@ -4,7 +4,6 @@
 #include "constants.hpp"
 #include "multiline_text.hpp"
 #include "state.hpp"
-#include "textbox.hpp"
 
 void on_receive_response(const ollama::response &response);
 
@@ -15,6 +14,7 @@ class OllamaState : public State {
 
         this->inputBox =
             MultilineText(this->data->assets.getFont(cst["fontName"]));
+        this->inputBox.write("AHAHAHHAHAHAHAHAHAHAHAHAH");
     }
     ~OllamaState() {
         if (this->ollamathread != nullptr) {

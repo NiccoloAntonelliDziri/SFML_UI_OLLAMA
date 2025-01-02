@@ -6,30 +6,42 @@
 class MultilineText : public sf::Drawable, public sf::Transformable {
     public:
     MultilineText() = default;
-    MultilineText(sf::Font &font)
-        : font(font), fontSize(cst.get<int>("fontSize")),
-          color(sf::Color::Black), interlinesSpace(2), lineLimit(107) {
+    MultilineText(const sf::Font &font, int numberCharacterLimit = 10,
+                  int characterSize = 20)
+        : font(font), characterSize(characterSize),
+          numberCharacterLimit(numberCharacterLimit) {
 
-        // Initialised at one line
-        this->lines.push_back(sf::Text());
-        this->textLines.push_back("");
+        this->color = sf::Color::Black;
     }
-    ~MultilineText() = default;
 
-    void addChar(char c);
+    // It is pretty when the font is monospaced because the text is aligned
+    // correctly.
+    void write(const std::string &text);
+
+    void setFont(const sf::Font &font);
+    void setCharacterSize(int characterSize);
+    void setColor(const sf::Color &color);
+
+    sf::FloatRect getGlobalBounds() const;
+
+    inline sf::Font getFont() const { return this->font; }
+    inline int getCharacterSize() const { return this->characterSize; }
+    inline sf::Color getColor() const { return this->color; }
+    inline int getNumberCharacterLimit() const {
+        return this->numberCharacterLimit;
+    }
+    inline std::string getText() const { return this->text; }
 
     private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-    sf::RectangleShape box;
-    std::vector<sf::Text> lines;
-    std::vector<std::string> textLines;
-    std::string text;
-
     sf::Font font;
-    int fontSize;
+    int characterSize;
+    int lineSpacing;
     sf::Color color;
 
-    int interlinesSpace;
-    int lineLimit;
+    std::vector<sf::Text> lines;
+    std::string text;
+
+    int numberCharacterLimit;
 };
