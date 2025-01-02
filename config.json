@@ -1,0 +1,24 @@
+{
+    "titlebar": "C'est incroyable!",
+    "screenInitialWidth": 1280,
+    "screenInitialHeight": 720,
+    "windowClearColor": {
+        "r": 255,
+        "g": 255,
+        "b": 255,
+        "a": 255
+    },
+    "antiAliasingLevel": 8,
+    "initialMusicVolume": 100,
+    "playButtonName": "play",
+    "playButtonPath": "assets/images/buttons/play.png",
+    "settingsButtonName": "settings",
+    "settingsButtonPath": "assets/images/buttons/settings.png",
+    "leftArrowButtonName": "leftArrow",
+    "leftArrowButtonPath": "assets/images/buttons/left_arrow.png",
+    "rightArrowButtonName": "rightArrow",
+    "rightArrowButtonPath": "assets/images/buttons/right_arrow.png",
+    "fontName": "ubuntu",
+    "fontPath": "assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf",
+    "fontSize": 20
+}
