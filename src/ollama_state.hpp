@@ -12,8 +12,7 @@ class OllamaState : public State {
     OllamaState(AppDataRef data)
         : data(data), streamingCounter(0), ollamathread(nullptr) {
 
-        this->inputBox =
-            MultilineText(this->data->assets.getFont(cst["fontName"]));
+        this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
     }
     ~OllamaState() {
         if (this->ollamathread != nullptr) {
@@ -34,8 +33,8 @@ class OllamaState : public State {
 
     std::string promptInput;
     std::string temp;
-    // TextBox textBox;
-    MultilineText inputBox;
+
+    InputBox inputBox;
 
     unsigned streamingCounter;
 

@@ -90,9 +90,43 @@ void MultilineText::setLineSpacing(int lineSpacing) {
     if (this->lines.size() <= 1) {
         return;
     }
-    for (int i = 1; i < this->lines.size(); i++) {
+    for (int i = 1; i < (int)this->lines.size(); i++) {
         this->lines[i].setPosition(this->lines[i].getPosition().x,
                                    this->lines[i - 1].getPosition().y +
                                        this->characterSize + this->lineSpacing);
+    }
+}
+void MultilineText::setNumberCharacterLimit(int numberCharacterLimit) {
+    this->numberCharacterLimit = numberCharacterLimit;
+    this->write(this->text);
+}
+
+/* InputBox */
+
+void InputBox::typedOn(sf::Event input) {
+    if (!this->isSelected) {
+        return;
+    }
+    int charTyped = input.text.unicode;
+    if (charTyped < 128) {
+        // 8 is the backspace key
+        if (charTyped == 8) {
+            if (this->text.length() > 0) {
+                this->write(this->text.substr(0, this->text.length() - 1));
+            }
+        }
+        // 13 is the enter key
+        else if (charTyped == 13) {
+            this->write("");
+        }
+        // 27 is the escape key
+        else if (charTyped == 27) {
+            this->isSelected = false;
+            // Peut-être un jour implémenter les flèches pour se déplacer dans
+            // le texte Ou des caractères spéciaux ou des raccourcis clavier ou
+            // la touche Suppr
+        } else {
+            this->write(this->text + static_cast<char>(charTyped));
+        }
     }
 }

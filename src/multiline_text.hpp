@@ -6,8 +6,10 @@
 class MultilineText : public sf::Drawable, public sf::Transformable {
     public:
     MultilineText() = default;
-    MultilineText(const sf::Font &font, int numberCharacterLimit = 10,
-                  int characterSize = 20)
+    MultilineText(
+        const sf::Font &font,
+        int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
+        int characterSize = cst.get<int>("fontSize"))
         : font(font), characterSize(characterSize),
           numberCharacterLimit(numberCharacterLimit) {
 
@@ -23,6 +25,7 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     void setCharacterSize(int characterSize);
     void setLineSpacing(int lineSpacing);
     void setColor(const sf::Color &color);
+    void setNumberCharacterLimit(int numberCharacterLimit);
 
     sf::FloatRect getGlobalBounds() const;
 
@@ -43,7 +46,30 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     sf::Color color;
 
     std::vector<sf::Text> lines;
-    std::string text;
 
     int numberCharacterLimit;
+
+    // Operator << is converted to a string
+    std::ostream &operator<<(std::ostream &os) {
+        os << this->text;
+        return os;
+    }
+
+    protected:
+    std::string text;
+};
+
+class InputBox : public MultilineText {
+    public:
+    InputBox() = default;
+    InputBox(const sf::Font &font,
+             int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
+             int characterSize = cst.get<int>("fontSize"))
+        : MultilineText(font, numberCharacterLimit, characterSize) {}
+
+    void typedOn(sf::Event input);
+    inline void setSelected(bool selected) { this->isSelected = selected; }
+
+    private:
+    bool isSelected = false;
 };

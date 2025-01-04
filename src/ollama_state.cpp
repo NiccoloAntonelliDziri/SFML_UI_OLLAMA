@@ -28,10 +28,16 @@ void on_receive_response(const ollama::response &response) {
 void OllamaState::init() {
     sf::Vector2u screen = this->data->window.getSize();
 
-    sf::Vector2f pos(100, screen.y - 200);
-    // this->inputBox.setPosition(pos);
+    std::cout << "Screen size: " << screen.x << "x" << screen.y << std::endl;
+
     this->inputBox.write(
-        "AutrhgtrhrhytdhjdezfezezfrezfcAHAHHAHAHAHAHAHAHAHAHAH");
+        "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkaaaaaaaaaaa"
+        "aaaaaaaaaaaaaaaaaaaaaaaa"
+        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaautrhgtrhrhytdhj"
+        "dezfezezfrezfcAHAHHAHAHAHAHAHAHAHAHAH");
 
     ollama::show_requests(true);
     ollama::show_replies(true);
@@ -47,13 +53,9 @@ void OllamaState::handleInput() {
         }
         if (event.type == sf::Event::TextEntered) {
 
-            this->inputBox.setColor(sf::Color::Blue);
-            this->inputBox.setLineSpacing(0);
-            this->inputBox.write("AJIOHDHUIIFNGZEFUEGYZFNIEGZYIFNGRZYNIFEZYFNIR"
-                                 "FUNOEZYOFNEZYONFY\nFNEZFOGEZ7OIFG");
+            this->inputBox.setSelected(true);
+            this->inputBox.typedOn(event);
 
-            // this->textBox.typedOn(event);
-            //
             // if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
             //     // CALL OLLAMA RESPONSE
             //     llm::currentPrompt = this->promptInput;

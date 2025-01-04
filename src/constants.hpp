@@ -6,7 +6,8 @@
 using json = nlohmann::json;
 
 NLOHMANN_JSON_NAMESPACE_BEGIN
-template <> struct adl_serializer<sf::Color> {
+template <>
+struct adl_serializer<sf::Color> {
     static void to_json(json &j, const sf::Color &color) {
         j = json{
             {"r", color.r}, {"g", color.g}, {"b", color.b}, {"a", color.a}};
@@ -47,7 +48,8 @@ class Constants {
         // std::cout << this->j.dump(4) << std::endl;
     }
 
-    template <typename T = std::string> T get(std::string key) const {
+    template <typename T = std::string>
+    T get(std::string key) const {
         // Check if key exists
         if (!this->j.contains(key)) {
             std::cerr << "Key not found: " << key << std::endl;
