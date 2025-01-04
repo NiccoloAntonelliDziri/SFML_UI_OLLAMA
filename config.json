@@ -21,6 +21,5 @@
     "fontName": "ubuntu",
     "fontPath": "assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf",
     "fontSize": 24,
-    "maxNumberCharacterLimit": 100,
-    "maxLinesToDisplay": 3
+    "maxNumberCharacterLimit": 93
 }

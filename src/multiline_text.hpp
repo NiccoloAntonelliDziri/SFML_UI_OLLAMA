@@ -10,8 +10,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
         const sf::Font &font,
         int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
         int characterSize = cst.get<int>("fontSize"))
-        : font(font), characterSize(characterSize),
-          numberCharacterLimit(numberCharacterLimit) {
+        : font(font), numberCharacterLimit(numberCharacterLimit),
+          characterSize(characterSize) {
 
         this->color = sf::Color::Black;
         this->lineSpacing = 0;
@@ -40,12 +40,9 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
+    protected:
     sf::Font font;
-    int characterSize;
-    int lineSpacing;
     sf::Color color;
-
-    std::vector<sf::Text> lines;
 
     int numberCharacterLimit;
 
@@ -55,21 +52,59 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
         return os;
     }
 
-    protected:
     std::string text;
+    std::vector<sf::Text> lines;
+
+    int characterSize;
+    int lineSpacing;
 };
 
-class InputBox : public MultilineText {
+// This class is a MultilineText that can be scrolled.
+// Aka not showing all the text at once.
+// scroll is automatic
+// scrollUp and scrollDown are manual
+class ScrollTextInPlace : public MultilineText {
+    public:
+    ScrollTextInPlace() = default;
+    ScrollTextInPlace(
+        const sf::Font &font,
+        int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
+        int characterSize = cst.get<int>("fontSize"))
+        : MultilineText(font, numberCharacterLimit, characterSize) {
+        this->maxLinesToDisplay = -1; // -1 means all lines
+        this->offset = 0;
+    }
+    // This function is the same as write, but not write all the lines depending
+    // on the maxLinesToDisplay
+    void write(const std::string &text);
+
+    void scrollUp();
+    void scrollDown();
+
+    // When set to -1, it will display all the lines
+    inline void setMaxLinesToDisplay(int maxLinesToDisplay) {
+        this->maxLinesToDisplay = maxLinesToDisplay;
+    }
+    inline int getMaxLinesToDisplay() const { return this->maxLinesToDisplay; }
+
+    private:
+    int maxLinesToDisplay;
+    int offset;
+};
+
+class InputBox : public ScrollTextInPlace {
     public:
     InputBox() = default;
     InputBox(const sf::Font &font,
              int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
              int characterSize = cst.get<int>("fontSize"))
-        : MultilineText(font, numberCharacterLimit, characterSize) {}
+        : ScrollTextInPlace(font, numberCharacterLimit, characterSize) {}
 
     void typedOn(sf::Event input);
     inline void setSelected(bool selected) { this->isSelected = selected; }
 
     private:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
     bool isSelected = false;
 };

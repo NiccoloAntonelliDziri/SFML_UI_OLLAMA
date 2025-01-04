@@ -26,18 +26,15 @@ void on_receive_response(const ollama::response &response) {
 }
 
 void OllamaState::init() {
-    sf::Vector2u screen = this->data->window.getSize();
 
-    std::cout << "Screen size: " << screen.x << "x" << screen.y << std::endl;
+    this->inputBox.setPosition(40, 270);
+    this->inputBox.setMaxLinesToDisplay(3);
 
     this->inputBox.write(
         "Aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
         "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaakkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
-        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkaaaaaaaaaaa"
-        "aaaaaaaaaaaaaaaaaaaaaaaa"
-        "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaautrhgtrhrhytdhj"
-        "dezfezezfrezfcAHAHHAHAHAHAHAHAHAHAHAH");
+        "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+        "k");
 
     ollama::show_requests(true);
     ollama::show_replies(true);
@@ -94,6 +91,7 @@ void OllamaState::handleInput() {
     }
 }
 void OllamaState::draw(float dt) { this->data->window.draw(this->inputBox); }
+
 void OllamaState::update(float dt) {
     if (llm::isStreaming) {
         // affiche seulement quand un nouveau token arrive

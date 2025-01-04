@@ -67,7 +67,7 @@ class C_0015731897903105408204 {
 ..
 +get<T=std::string>(std::string key) const : T
 __
-+j : json
+-j : json
 }
 class "InputManager" as C_0011218267209626974551
 class C_0011218267209626974551 {
@@ -143,56 +143,57 @@ __
 class "MultilineText" as C_0006075958540417117804
 class C_0006075958540417117804 {
 +MultilineText() = default : void
-+MultilineText(sf::Font & font) : void
-+~MultilineText() = default : void
++MultilineText(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
-+addChar(char c) : void
+#operator<<(std::ostream & os) : std::ostream &
+..
 -draw(sf::RenderTarget & target, sf::RenderStates states) const : void
++getCharacterSize() const : int
++getColor() const : sf::Color
++getFont() const : sf::Font
++getGlobalBounds() const : sf::FloatRect
++getNumberCharacterLimit() const : int
++getText() const : std::string
++setCharacterSize(int characterSize) : void
++setColor(const sf::Color & color) : void
++setFont(const sf::Font & font) : void
++setLineSpacing(int lineSpacing) : void
++setNumberCharacterLimit(int numberCharacterLimit) : void
++write(const std::string & text) : void
 __
--box : sf::RectangleShape
--color : sf::Color
--font : sf::Font
--fontSize : int
--interlinesSpace : int
--lineLimit : int
--lines : std::vector<sf::Text>
--text : std::string
--textLines : std::vector<std::string>
+#characterSize : int
+#color : sf::Color
+#font : sf::Font
+#lineSpacing : int
+#lines : std::vector<sf::Text>
+#numberCharacterLimit : int
+#text : std::string
 }
-class "TextBox" as C_0011459977689909642407
-class C_0011459977689909642407 {
-+TextBox() = default : void
-+TextBox(int size, sf::Vector2f boxSize, sf::Color color, bool selected) : void
+class "ScrollTextInPlace" as C_0017227335679142879242
+class C_0017227335679142879242 {
++ScrollTextInPlace() = default : void
++ScrollTextInPlace(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
-+addLine() : void
--deleteLastChar() : void
-+draw(sf::RenderWindow & window) : void
-+getLimit() : int
-+getText() : std::string
--inputLogic(int charType) : void
-+reset() : void
-+setFont(sf::Font & font) : void
-+setLimit(bool tof) : void
-+setLimit(bool tof, int lim) : void
-+setPosition(sf::Vector2f pos) : void
+-draw(sf::RenderTarget & target, sf::RenderStates states) const : void
++getMaxLinesToDisplay() const : int
++scrollDown() : void
++scrollUp() : void
++setMaxLinesToDisplay(int maxLinesToDisplay) : void
++write(const std::string & text) : void
+__
+-maxLinesToDisplay : int
+-offset : int
+}
+class "InputBox" as C_0006905555226801011843
+class C_0006905555226801011843 {
++InputBox() = default : void
++InputBox(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
+..
 +setSelected(bool selected) : void
-+setSize(sf::Vector2f boxSize) : void
 +typedOn(sf::Event input) : void
 __
 -box : sf::RectangleShape
--boxSize : sf::Vector2f
--color : sf::Color
--currentLine : int
--font : sf::Font
--hasLimit : bool
 -isSelected : bool
--limit : int
--lines : std::vector<sf::Text>
--position : sf::Vector2f
--size : int
--text : std::ostringstream
--textLines : std::vector<std::ostringstream>
--textbox : sf::Text *
 }
 class "OllamaState" as C_0010767441053444769080
 class C_0010767441053444769080 {
@@ -205,7 +206,7 @@ class C_0010767441053444769080 {
 +update(float dt) : void
 __
 -data : AppDataRef
--inputBox : MultilineText
+-inputBox : InputBox
 -messages : ollama::messages
 -ollamathread : std::thread *
 -promptInput : std::string
@@ -223,8 +224,12 @@ C_0002878685250157375085 o-- C_0013018981818162392349 : +music
 C_0007275061059561579929 ..> C_0002878685250157375085
 C_0001914138303902600425 <|-- C_0007275061059561579929
 
+C_0006075958540417117804 <|-- C_0017227335679142879242
+
+C_0017227335679142879242 <|-- C_0006905555226801011843
+
 C_0010767441053444769080 ..> C_0002878685250157375085
-C_0010767441053444769080 o-- C_0006075958540417117804 : -inputBox
+C_0010767441053444769080 o-- C_0006905555226801011843 : -inputBox
 C_0001914138303902600425 <|-- C_0010767441053444769080
 
 

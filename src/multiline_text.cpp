@@ -2,7 +2,6 @@
 
 void MultilineText::draw(sf::RenderTarget &target,
                          sf::RenderStates states) const {
-
     states.transform *= getTransform();
     // no texture
     states.texture = nullptr;
@@ -101,6 +100,83 @@ void MultilineText::setNumberCharacterLimit(int numberCharacterLimit) {
     this->write(this->text);
 }
 
+/* ScrollTextInPlace */
+
+void ScrollTextInPlace::write(const std::string &text) {
+    this->text = text;
+
+    this->lines.clear();
+
+    int charCounter = 0;
+    int lineCounter = 0;
+    std::string line = "";
+    for (char c : text) {
+        if (charCounter == this->numberCharacterLimit || c == '\n') {
+
+            sf::Text t;
+            t.setFont(this->font);
+            t.setString(line);
+            t.setCharacterSize(this->characterSize);
+            t.setFillColor(this->color);
+            t.setPosition(this->getPosition().x,
+                          this->getPosition().y +
+                              lineCounter *
+                                  (this->characterSize + this->lineSpacing));
+            this->lines.push_back(t);
+            lineCounter++;
+            line = "";
+            charCounter = 0;
+        }
+        if (c != '\n') {
+            line += c;
+            charCounter++;
+        }
+    }
+    // Add the last line
+    if (line != "") {
+        sf::Text t;
+        t.setFont(this->font);
+        t.setString(line);
+        t.setCharacterSize(this->characterSize);
+        t.setFillColor(this->color);
+        t.setPosition(this->getPosition().x,
+                      this->getPosition().y +
+                          lineCounter *
+                              (this->characterSize + this->lineSpacing));
+        this->lines.push_back(t);
+    }
+
+    // Si il ne faut pas les afficher toutes
+    // Update la position des lignes pour qu'elles restent au meme endroit
+    if (this->maxLinesToDisplay != -1) {
+        int start = std::max(0, (int)this->lines.size() -
+                                    this->maxLinesToDisplay - this->offset);
+        int end = std::min((int)this->lines.size(),
+                           start + this->maxLinesToDisplay - this->offset);
+
+        this->lines.erase(this->lines.begin() + end, this->lines.end());
+        this->lines.erase(this->lines.begin(), this->lines.begin() + start);
+
+        for (int i = 0; i < (int)this->lines.size(); i++) {
+            this->lines[i].setPosition(
+                this->lines[i].getPosition().x,
+                this->getPosition().y +
+                    i * (this->characterSize + this->lineSpacing));
+        }
+    }
+}
+
+void ScrollTextInPlace::scrollUp() {
+    if (this->offset < (int)this->lines.size() - 1) {
+        this->offset++;
+    }
+}
+void ScrollTextInPlace::scrollDown() {
+    if (this->offset > 0) {
+        this->offset--;
+    }
+}
+
 /* InputBox */
 
 void InputBox::typedOn(sf::Event input) {
@@ -128,5 +204,15 @@ void InputBox::typedOn(sf::Event input) {
         } else {
             this->write(this->text + static_cast<char>(charTyped));
         }
+    }
+}
+
+void InputBox::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    states.transform *= getTransform();
+    // no texture
+    states.texture = nullptr;
+
+    for (auto line : this->lines) {
+        target.draw(line, states);
     }
 }
