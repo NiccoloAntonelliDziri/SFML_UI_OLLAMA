@@ -2,6 +2,7 @@
 
 #include "../ollama/ollama.hpp" // For JSON
 #include <SFML/Graphics/Color.hpp>
+#include <SFML/System.hpp>
 
 using json = nlohmann::json;
 
@@ -21,13 +22,17 @@ struct adl_serializer<sf::Color> {
     }
 };
 
-// template <> struct adl_serializer<sf::Uint32> {
-//     static void to_json(json &j, const sf::Uint32 &value) { j = value; }
-//
-//     static void from_json(const json &j, sf::Uint32 &value) {
-//         value = j.get<sf::Uint32>();
-//     }
-// };
+template <typename T>
+struct adl_serializer<sf::Vector2<T>> {
+    static void to_json(json &j, const sf::Vector2<T> &v) {
+        j = json{{"x", v.x}, {"y", v.y}};
+    }
+
+    static void from_json(const json &j, sf::Vector2<T> &v) {
+        v.x = j.at("x").get<T>();
+        v.y = j.at("y").get<T>();
+    }
+};
 NLOHMANN_JSON_NAMESPACE_END
 
 // Class for easy access to Constants

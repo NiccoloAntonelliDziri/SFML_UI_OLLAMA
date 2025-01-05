@@ -7,8 +7,6 @@
 #include "state_machine.hpp"
 #include <SFML/Graphics.hpp>
 
-#include "../ollama/ollama.hpp"
-
 // The BIG struct with all the data to run everything.
 // Cette structure existe une seule fois dans la class `App`
 struct AppData {

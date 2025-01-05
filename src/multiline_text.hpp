@@ -15,6 +15,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
 
         this->color = sf::Color::Black;
         this->lineSpacing = 0;
+        this->text = "";
+        this->position = sf::Vector2f(0, 0);
     }
 
     // It is pretty when the font is monospaced because the text is aligned
@@ -26,6 +28,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     void setLineSpacing(int lineSpacing);
     void setColor(const sf::Color &color);
     void setNumberCharacterLimit(int numberCharacterLimit);
+    void setPosition(const sf::Vector2f &position);
+    void setPosition(float x, float y);
 
     sf::FloatRect getGlobalBounds() const;
 
@@ -36,21 +40,24 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
         return this->numberCharacterLimit;
     }
     inline std::string getText() const { return this->text; }
-
-    private:
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-
-    protected:
-    sf::Font font;
-    sf::Color color;
-
-    int numberCharacterLimit;
+    inline sf::Vector2f getPosition() const { return this->position; }
 
     // Operator << is converted to a string
     std::ostream &operator<<(std::ostream &os) {
         os << this->text;
         return os;
     }
+
+    private:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
+    sf::Vector2f position;
+
+    protected:
+    sf::Font font;
+    sf::Color color;
+
+    int numberCharacterLimit;
 
     std::string text;
     std::vector<sf::Text> lines;
@@ -98,13 +105,17 @@ class InputBox : public ScrollTextInPlace {
     InputBox(const sf::Font &font,
              int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
              int characterSize = cst.get<int>("fontSize"))
-        : ScrollTextInPlace(font, numberCharacterLimit, characterSize) {}
+        : ScrollTextInPlace(font, numberCharacterLimit, characterSize) {
+
+        this->isSelected = false;
+    }
 
     void typedOn(sf::Event input);
     inline void setSelected(bool selected) { this->isSelected = selected; }
+    inline bool getSelected() const { return this->isSelected; }
 
     private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
-    bool isSelected = false;
+    bool isSelected;
 };

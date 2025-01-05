@@ -21,5 +21,26 @@
     "fontName": "ubuntu",
     "fontPath": "assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf",
     "fontSize": 24,
-    "maxNumberCharacterLimit": 93
+    "maxNumberCharacterLimit": 93,
+    "maxNumberLinesInputBox": 3,
+    "inputBoxOutlineColor": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 255
+    },
+    "inputBoxThickness": 2,
+    "inputBoxTextPosition": {
+        "x": 78,
+        "y": 541
+    },
+    "inputBoxPosition": {
+        "x": 72,
+        "y": 541
+    },
+    "inputBoxSize": {
+        "x": 1131,
+        "y": 83
+    },
+    "inputDefaultText": "Send a message to initiate a conversation with granite3-moe."
 }

@@ -25,11 +25,25 @@ bool InputManager::isSpriteClicked(sf::Sprite sprite, sf::Mouse::Button button,
 bool InputManager::isMouseClickedInArea(sf::IntRect area,
                                         sf::Mouse::Button button,
                                         sf::Event &event,
-                                        sf::RenderWindow window) {
+                                        sf::RenderWindow &window) {
 
     if (event.type == sf::Event::MouseButtonPressed) {
         if (event.mouseButton.button == button) {
             if (area.contains(sf::Mouse::getPosition(window)))
+                return true;
+        }
+    }
+    return false;
+}
+
+bool InputManager::isMouseClickedOutsideArea(sf::IntRect area,
+                                             sf::Mouse::Button button,
+                                             sf::Event &event,
+                                             sf::RenderWindow &window) {
+
+    if (event.type == sf::Event::MouseButtonPressed) {
+        if (event.mouseButton.button == button) {
+            if (!area.contains(sf::Mouse::getPosition(window)))
                 return true;
         }
     }

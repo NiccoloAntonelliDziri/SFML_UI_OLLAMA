@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../ollama/ollama.hpp"
 #include "app.hpp"
 #include "constants.hpp"
 #include "multiline_text.hpp"
@@ -13,6 +14,12 @@ class OllamaState : public State {
         : data(data), streamingCounter(0), ollamathread(nullptr) {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
+
+        // this->inputBoxBackground.setFillColor(sf::Color::Transparent);
+        // this->inputBoxBackground.setOutlineColor(
+        //     cst.get<sf::Color>("inputBoxOutlineColor"));
+        // this->inputBoxBackground.setOutlineThickness(
+        //     cst.get<float>("inputBoxThickness"));
     }
     ~OllamaState() {
         if (this->ollamathread != nullptr) {
@@ -35,6 +42,7 @@ class OllamaState : public State {
     std::string temp;
 
     InputBox inputBox;
+    sf::RectangleShape inputBoxBackground;
 
     unsigned streamingCounter;
 

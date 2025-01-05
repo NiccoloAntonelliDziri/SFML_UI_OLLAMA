@@ -100,6 +100,22 @@ void MultilineText::setNumberCharacterLimit(int numberCharacterLimit) {
     this->write(this->text);
 }
 
+void MultilineText::setPosition(const sf::Vector2f &position) {
+    this->position = position;
+
+    int lineCounter = 0;
+    for (auto &line : this->lines) {
+        line.setPosition(position.x,
+                         position.y + lineCounter * (this->characterSize +
+                                                     this->lineSpacing));
+        lineCounter++;
+    }
+}
+
+void MultilineText::setPosition(float x, float y) {
+    this->setPosition(sf::Vector2f(x, y));
+}
+
 /* ScrollTextInPlace */
 
 void ScrollTextInPlace::write(const std::string &text) {

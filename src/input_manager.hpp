@@ -18,7 +18,11 @@ class InputManager {
 
     // Retourne `true` si `button` est clické dans le rectange `area`
     bool isMouseClickedInArea(sf::IntRect area, sf::Mouse::Button button,
-                              sf::Event &event, sf::RenderWindow);
+                              sf::Event &event, sf::RenderWindow &window);
+
+    // Retourne `true` si `button` est clické en dehors du rectange `area`
+    bool isMouseClickedOutsideArea(sf::IntRect area, sf::Mouse::Button button,
+                                   sf::Event &event, sf::RenderWindow &window);
 
     // Retourne `true` si une action permettant
     // de fermer l'application est déclanchée.
