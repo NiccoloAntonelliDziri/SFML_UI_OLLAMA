@@ -8,25 +8,20 @@
 
 void on_receive_response(const ollama::response &response);
 
+void load_model(const std::string &model_name, bool &loaded_model);
+
 class OllamaState : public State {
     public:
-    OllamaState(AppDataRef data)
-        : data(data), streamingCounter(0), ollamathread(nullptr) {
+    OllamaState(AppDataRef data) : data(data), streamingCounter(0) {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
 
-        // this->inputBoxBackground.setFillColor(sf::Color::Transparent);
-        // this->inputBoxBackground.setOutlineColor(
-        //     cst.get<sf::Color>("inputBoxOutlineColor"));
-        // this->inputBoxBackground.setOutlineThickness(
-        //     cst.get<float>("inputBoxThickness"));
+        ollama::show_requests(true);
+        ollama::show_replies(true);
+
+        this->response_callback = on_receive_response;
     }
-    ~OllamaState() {
-        if (this->ollamathread != nullptr) {
-            this->ollamathread->join();
-            delete this->ollamathread;
-        }
-    }
+    ~OllamaState() { this->ollamathread.join(); }
 
     void init() override;
     void handleInput() override;
@@ -47,7 +42,8 @@ class OllamaState : public State {
     unsigned streamingCounter;
 
     std::function<void(const ollama::response &)> response_callback;
-    std::thread *ollamathread;
+
+    std::thread ollamathread;
 
     ollama::messages messages;
 };

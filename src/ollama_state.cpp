@@ -1,11 +1,12 @@
 #include "ollama_state.hpp"
 
 namespace llm {
-std::ostringstream response;
-std::atomic<bool> done{false};
-std::atomic<bool> isStreaming{false};
-std::atomic<unsigned> streamingCounter{0};
-std::string currentPrompt;
+inline std::ostringstream response;
+inline std::atomic<bool> loadedModel{false};
+inline std::atomic<bool> done{false};
+inline std::atomic<bool> isStreaming{false};
+inline std::atomic<unsigned> streamingCounter{0};
+inline std::string currentPrompt;
 } // namespace llm
 
 void on_receive_response(const ollama::response &response) {
@@ -23,7 +24,13 @@ void on_receive_response(const ollama::response &response) {
     }
 }
 
+void load_model(const std::string &model_name, bool &loaded_model) {
+    bool b = ollama::load_model(model_name);
+    loaded_model = b;
+}
+
 void OllamaState::init() {
+    // Load model in memory
 
     this->inputBoxBackground.setPosition(
         cst.get<sf::Vector2f>("inputBoxPosition"));
@@ -42,11 +49,6 @@ void OllamaState::init() {
     this->inputBox.setColor(color);
     this->inputBox.setPosition(cst.get<sf::Vector2f>("inputBoxTextPosition"));
     this->inputBox.setMaxLinesToDisplay(3);
-
-    ollama::show_requests(true);
-    ollama::show_replies(true);
-
-    this->response_callback = on_receive_response;
 }
 
 void OllamaState::handleInput() {
@@ -90,7 +92,10 @@ void OllamaState::handleInput() {
 
             this->inputBox.typedOn(event);
 
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return)) {
+            // Wait for thread to finish previous request
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) &&
+                this->ollamathread.joinable()) {
+
                 // CALL OLLAMA RESPONSE
                 llm::currentPrompt = this->promptInput;
                 std::cout << "PROMPT: " << this->promptInput << std::endl;
@@ -98,7 +103,7 @@ void OllamaState::handleInput() {
                 this->data->messages.push_back(
                     ollama::message("user", this->promptInput));
 
-                this->ollamathread = new std::thread([this] {
+                this->ollamathread = std::thread([this] {
                     ollama::generate("granite3-moe", llm::currentPrompt,
                                      this->response_callback);
                 });
