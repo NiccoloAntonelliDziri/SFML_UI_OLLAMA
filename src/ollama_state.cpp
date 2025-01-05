@@ -37,10 +37,9 @@ void OllamaState::init() {
     this->inputBox.write(cst["inputDefaultText"]);
 
     // Couleur noire + transparence + fond blanc = gris
-    sf::Color color = this->inputBox.getColor();
+    sf::Color color = cst.get<sf::Color>("textColor");
     color.a = 128;
     this->inputBox.setColor(color);
-
     this->inputBox.setPosition(cst.get<sf::Vector2f>("inputBoxTextPosition"));
     this->inputBox.setMaxLinesToDisplay(3);
 
@@ -65,6 +64,8 @@ void OllamaState::handleInput() {
                 sf::Mouse::Left, event, this->data->window)) {
 
             this->inputBox.setSelected(true);
+            this->inputBox.setColor(cst.get<sf::Color>("textColor"));
+            this->inputBox.write("");
 
             // InputBox is clicked outside exit input mode
         } else if (this->data->input.isMouseClickedOutsideArea(
@@ -77,6 +78,12 @@ void OllamaState::handleInput() {
                        sf::Mouse::Left, event, this->data->window)) {
 
             this->inputBox.setSelected(false);
+
+            // Set transparency once again
+            sf::Color color = this->inputBox.getColor();
+            color.a = 128;
+            this->inputBox.setColor(color);
+            this->inputBox.write(cst["inputDefaultText"]);
         }
 
         if (event.type == sf::Event::TextEntered) {

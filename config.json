@@ -29,6 +29,12 @@
         "b": 0,
         "a": 255
     },
+    "textColor": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 255
+    },
     "inputBoxThickness": 2,
     "inputBoxTextPosition": {
         "x": 78,
