@@ -2,7 +2,6 @@
 
 namespace llm {
 inline std::ostringstream response;
-inline std::atomic<bool> loadedModel{false};
 inline std::atomic<bool> done{false};
 inline std::atomic<bool> isStreaming{false};
 inline std::atomic<unsigned> streamingCounter{0};
@@ -24,19 +23,12 @@ void on_receive_response(const ollama::response &response) {
     }
 }
 
-void load_model(const std::string &model_name, bool &loaded_model) {
-    bool b = ollama::load_model(model_name);
-    loaded_model = b;
-}
-
 void generate(const std::string &model, const ollama::messages messages,
               const std::function<void(const ollama::response &)> &callback) {
     ollama::chat(model, messages, callback);
 }
 
 void OllamaState::init() {
-    // Load model in memory
-
     this->inputBoxBackground.setPosition(
         cst.get<sf::Vector2f>("inputBoxPosition"));
     this->inputBoxBackground.setSize(cst.get<sf::Vector2f>("inputBoxSize"));
@@ -96,10 +88,10 @@ void OllamaState::handleInput() {
         // Keyboard scrolling
         if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Up) {
-                std::cout << "UP" << std::endl;
+                // std::cout << "UP" << std::endl;
                 this->inputBox.scrollUp();
             } else if (event.key.code == sf::Keyboard::Down) {
-                std::cout << "DOWN" << std::endl;
+                // std::cout << "DOWN" << std::endl;
                 this->inputBox.scrollDown();
             }
         }
@@ -119,23 +111,30 @@ void OllamaState::handleInput() {
 
             this->inputBox.typedOn(event);
 
-            // Wait for thread to finish previous request
+            // If Key pressed and prompt is not empty and model is loaded
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) &&
-                this->ollamathread.isReady() && !this->promptInput.empty()) {
+                !this->promptInput.empty()) {
 
-                // CALL OLLAMA RESPONSE
-                llm::currentPrompt = this->promptInput;
-                std::cout << "PROMPT: " << this->promptInput << std::endl;
+                // If thread is ready to start
+                if (this->ollamathread.isReady()) {
 
-                this->messages.push_back(
-                    ollama::message("user", this->promptInput));
+                    // CALL OLLAMA RESPONSE
+                    llm::currentPrompt = this->promptInput;
+                    std::cout << "PROMPT: " << this->promptInput << std::endl;
 
-                this->ollamathread.start(generate, "granite3-moe",
-                                         this->messages,
-                                         this->response_callback);
+                    this->messages.push_back(
+                        ollama::message("user", this->promptInput));
 
-                this->promptInput.clear();
-                this->inputBox.write("");
+                    this->ollamathread.start(generate, cst["modelLLMname"],
+                                             this->messages,
+                                             on_receive_response);
+
+                    this->promptInput.clear();
+                    this->inputBox.write("");
+                } else {
+                    std::cout << "Thread is not ready" << std::endl;
+                }
+
             } else {
                 this->promptInput = this->inputBox.getText();
             }
@@ -157,7 +156,7 @@ void OllamaState::update(float dt) {
         }
     }
     if (llm::done) {
-        this->ollamathread.join();
+        this->ollamathread.reset();
         this->messages.push_back(
             ollama::message("assistant", llm::response.str()));
         llm::response.str("");

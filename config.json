@@ -48,5 +48,6 @@
         "x": 1131,
         "y": 83
     },
-    "inputDefaultText": "Send message."
+    "inputDefaultText": "Send message.",
+    "modelLLMname": "granite3-moe"
 }

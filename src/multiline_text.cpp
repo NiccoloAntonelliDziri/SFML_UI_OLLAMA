@@ -173,11 +173,6 @@ void ScrollTextInPlace::write(const std::string &text) {
                            startBeforeOffset + this->maxLinesToDisplay -
                                this->offset);
 
-        std::cout << "start: " << start << " end: " << end << std::endl;
-        std::cout << "lines.size(): " << this->lines.size() << std::endl;
-        std::cout << "maxLinesToDisplay: " << this->maxLinesToDisplay
-                  << std::endl;
-
         // Effacement du début et de la fin
         this->lines.erase(this->lines.begin() + end, this->lines.end());
         this->lines.erase(this->lines.begin(), this->lines.begin() + start);
@@ -195,12 +190,11 @@ void ScrollTextInPlace::scrollUp() {
     if (this->maxLinesToDisplay == -1) {
         return;
     }
-    if (this->lines.size() + this->offset > this->maxLinesToDisplay) {
+    if ((int)this->lines.size() + this->offset > this->maxLinesToDisplay) {
         return;
     }
     this->offset++;
     this->write(this->text);
-    std::cout << "offset: " << this->offset << std::endl;
 }
 void ScrollTextInPlace::scrollDown() {
     if (this->maxLinesToDisplay == -1) {
@@ -211,7 +205,6 @@ void ScrollTextInPlace::scrollDown() {
     }
     this->offset--;
     this->write(this->text);
-    std::cout << "offset: " << this->offset << std::endl;
 }
 
 /* InputBox */
@@ -242,15 +235,5 @@ void InputBox::typedOn(sf::Event input) {
         } else {
             this->write(this->text + static_cast<char>(charTyped));
         }
-    }
-}
-
-void InputBox::draw(sf::RenderTarget &target, sf::RenderStates states) const {
-    states.transform *= getTransform();
-    // no texture
-    states.texture = nullptr;
-
-    for (auto line : this->lines) {
-        target.draw(line, states);
     }
 }

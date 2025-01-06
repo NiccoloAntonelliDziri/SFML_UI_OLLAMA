@@ -115,7 +115,22 @@ class InputBox : public ScrollTextInPlace {
     inline bool getSelected() const { return this->isSelected; }
 
     private:
-    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
-
     bool isSelected;
+};
+
+// TODO
+class ChatBox : public MultilineText {
+    public:
+    ChatBox() = default;
+    ChatBox(const sf::Font &font,
+            int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
+            int characterSize = cst.get<int>("fontSize"))
+        : MultilineText(font, numberCharacterLimit, characterSize) {}
+
+    // not the same scrollUp or scrollDown as in ScrollTextInPlace
+
+    void write(const std::string &text);
+
+    void scrollUp();
+    void scrollDown();
 };

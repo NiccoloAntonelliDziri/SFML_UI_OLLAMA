@@ -38,7 +38,8 @@ class ThreadManager {
 
     inline bool isReady() { return this->isResultReady; }
 
-    inline void join() {
+    // Wait for thread to finish and reset promise
+    inline void reset() {
         this->thread.join();
         this->promise = std::promise<ResultType>();
         this->future = this->promise.get_future();
