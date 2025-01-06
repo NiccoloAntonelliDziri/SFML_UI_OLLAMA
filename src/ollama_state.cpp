@@ -29,9 +29,9 @@ void load_model(const std::string &model_name, bool &loaded_model) {
     loaded_model = b;
 }
 
-void generate(const std::string &model, const std::string &prompt,
+void generate(const std::string &model, const ollama::messages messages,
               const std::function<void(const ollama::response &)> &callback) {
-    ollama::generate(model, prompt, callback);
+    ollama::chat(model, messages, callback);
 }
 
 void OllamaState::init() {
@@ -105,11 +105,11 @@ void OllamaState::handleInput() {
                 llm::currentPrompt = this->promptInput;
                 std::cout << "PROMPT: " << this->promptInput << std::endl;
 
-                this->data->messages.push_back(
+                this->messages.push_back(
                     ollama::message("user", this->promptInput));
 
                 this->ollamathread.start(generate, "granite3-moe",
-                                         llm::currentPrompt,
+                                         this->messages,
                                          this->response_callback);
 
                 this->promptInput.clear();
@@ -136,9 +136,15 @@ void OllamaState::update(float dt) {
     }
     if (llm::done) {
         this->ollamathread.join();
+        this->messages.push_back(
+            ollama::message("assistant", llm::response.str()));
         llm::response.str("");
         llm::response.clear();
         this->streamingCounter = 0;
         llm::done = false;
+
+        for (const auto &message : this->messages) {
+            std::cout << message << std::endl;
+        }
     }
 }

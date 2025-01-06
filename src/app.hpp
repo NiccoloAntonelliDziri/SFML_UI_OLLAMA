@@ -15,8 +15,6 @@ struct AppData {
     InputManager input;
     AssetManager assets;
     MusicManager music;
-
-    ollama::messages messages;
 };
 
 using AppDataRef = std::shared_ptr<AppData>; // pointeur vers structure

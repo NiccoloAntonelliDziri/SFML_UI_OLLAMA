@@ -11,6 +11,9 @@ void on_receive_response(const ollama::response &response);
 
 void load_model(const std::string &model_name, bool &loaded_model);
 
+void generate(const std::string &model, const ollama::messages messages,
+              const std::function<void(const ollama::response &)> &callback);
+
 class OllamaState : public State {
     public:
     OllamaState(AppDataRef data) : data(data), streamingCounter(0) {
