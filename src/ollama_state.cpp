@@ -29,6 +29,11 @@ void load_model(const std::string &model_name, bool &loaded_model) {
     loaded_model = b;
 }
 
+void generate(const std::string &model, const std::string &prompt,
+              const std::function<void(const ollama::response &)> &callback) {
+    ollama::generate(model, prompt, callback);
+}
+
 void OllamaState::init() {
     // Load model in memory
 
@@ -94,7 +99,7 @@ void OllamaState::handleInput() {
 
             // Wait for thread to finish previous request
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) &&
-                this->ollamathread.joinable()) {
+                this->ollamathread.isReady()) {
 
                 // CALL OLLAMA RESPONSE
                 llm::currentPrompt = this->promptInput;
@@ -103,10 +108,9 @@ void OllamaState::handleInput() {
                 this->data->messages.push_back(
                     ollama::message("user", this->promptInput));
 
-                this->ollamathread = std::thread([this] {
-                    ollama::generate("granite3-moe", llm::currentPrompt,
-                                     this->response_callback);
-                });
+                this->ollamathread.start(generate, "granite3-moe",
+                                         llm::currentPrompt,
+                                         this->response_callback);
 
                 this->promptInput.clear();
                 this->inputBox.write("");
@@ -131,6 +135,7 @@ void OllamaState::update(float dt) {
         }
     }
     if (llm::done) {
+        this->ollamathread.join();
         llm::response.str("");
         llm::response.clear();
         this->streamingCounter = 0;

@@ -32,13 +32,13 @@ void on(const ollama::response &response) {
 }
 
 int main() {
-    // App app(cst.get<int>("screenInitialWidth"),
-    //         cst.get<int>("screenInitialHeight"), cst["titlebar"]);
+    App app(cst.get<int>("screenInitialWidth"),
+            cst.get<int>("screenInitialHeight"), cst["titlebar"]);
 
-    ThreadManager<void> tm;
-    tm.start(generate, "granite3-moe",
-             "The quick brown fox jumps over the lazy dog", on);
-    tm.getResult();
+    // ThreadManager<void> tm;
+    // tm.start(generate, "granite3-moe",
+    //          "The quick brown fox jumps over the lazy dog", on);
+    // tm.getResult();
 
     return 0;
 }

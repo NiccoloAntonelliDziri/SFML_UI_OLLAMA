@@ -27,6 +27,10 @@ __
 -newstate : StateRef
 -states : std::stack<StateRef>
 }
+class "sf::Vector2<T>" as C_0000025472147750072530
+class C_0000025472147750072530 {
+__
+}
 class "AssetManager" as C_0007056669967416308786
 class C_0007056669967416308786 {
 +AssetManager() = default : void
@@ -59,6 +63,12 @@ class C_0006027996033599488936 {
 {static} +to_json(json & j, const sf::Color & color) : void
 __
 }
+class "nlohmann::adl_serializer<sf::Vector2<T>,void>" as C_0010335427585328718123
+class C_0010335427585328718123 {
+{static} +from_json(const json & j, sf::Vector2<T> & v) : void
+{static} +to_json(json & j, const sf::Vector2<T> & v) : void
+__
+}
 class "Constants" as C_0015731897903105408204
 class C_0015731897903105408204 {
 +Constants(std::string path) : void
@@ -75,7 +85,8 @@ class C_0011218267209626974551 {
 +~InputManager() = default : void
 ..
 +getMousePosition(sf::RenderWindow & window) const : sf::Vector2i
-+isMouseClickedInArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow) : bool
++isMouseClickedInArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
++isMouseClickedOutsideArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
 +isSpriteClicked(sf::Sprite sprite, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
 +isWindowClosed(sf::Event & event) : bool
 __
@@ -145,7 +156,7 @@ class C_0006075958540417117804 {
 +MultilineText() = default : void
 +MultilineText(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
-#operator<<(std::ostream & os) : std::ostream &
++operator<<(std::ostream & os) : std::ostream &
 ..
 -draw(sf::RenderTarget & target, sf::RenderStates states) const : void
 +getCharacterSize() const : int
@@ -153,12 +164,15 @@ class C_0006075958540417117804 {
 +getFont() const : sf::Font
 +getGlobalBounds() const : sf::FloatRect
 +getNumberCharacterLimit() const : int
++getPosition() const : sf::Vector2f
 +getText() const : std::string
 +setCharacterSize(int characterSize) : void
 +setColor(const sf::Color & color) : void
 +setFont(const sf::Font & font) : void
 +setLineSpacing(int lineSpacing) : void
 +setNumberCharacterLimit(int numberCharacterLimit) : void
++setPosition(const sf::Vector2f & position) : void
++setPosition(float x, float y) : void
 +write(const std::string & text) : void
 __
 #characterSize : int
@@ -167,6 +181,7 @@ __
 #lineSpacing : int
 #lines : std::vector<sf::Text>
 #numberCharacterLimit : int
+-position : sf::Vector2f
 #text : std::string
 }
 class "ScrollTextInPlace" as C_0017227335679142879242
@@ -174,7 +189,6 @@ class C_0017227335679142879242 {
 +ScrollTextInPlace() = default : void
 +ScrollTextInPlace(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
--draw(sf::RenderTarget & target, sf::RenderStates states) const : void
 +getMaxLinesToDisplay() const : int
 +scrollDown() : void
 +scrollUp() : void
@@ -189,10 +203,11 @@ class C_0006905555226801011843 {
 +InputBox() = default : void
 +InputBox(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
+-draw(sf::RenderTarget & target, sf::RenderStates states) const : void
++getSelected() const : bool
 +setSelected(bool selected) : void
 +typedOn(sf::Event input) : void
 __
--box : sf::RectangleShape
 -isSelected : bool
 }
 class "OllamaState" as C_0010767441053444769080
@@ -207,15 +222,32 @@ class C_0010767441053444769080 {
 __
 -data : AppDataRef
 -inputBox : InputBox
+-inputBoxBackground : sf::RectangleShape
 -messages : ollama::messages
--ollamathread : std::thread *
+-ollamathread : std::thread
 -promptInput : std::string
 -response_callback : std::function<void (const ollama::response &)>
 -streamingCounter : unsigned int
 -temp : std::string
 }
+class "ThreadManager<ResultType>" as C_0008931800749696307144
+class C_0008931800749696307144 {
++ThreadManager() : void
++~ThreadManager() : void
+..
++getResult() : ResultType
++isReady() : bool
++start<F,Args...>(F && f, Args &&... args) : void
+__
+-future : std::future<ResultType>
+-isResultReady : std::atomic<bool>
+-promise : std::promise<ResultType>
+-thread : std::thread
+}
 C_0013531716651485178890 ..> C_0001914138303902600425
 C_0006027996033599488936 ..|> C_0008758017994193186544
+C_0010335427585328718123 ..> C_0000025472147750072530
+C_0010335427585328718123 ..|> C_0008758017994193186544
 C_0013018981818162392349 o-- C_0008159535231821289035 : -status
 C_0002878685250157375085 o-- C_0013531716651485178890 : +machine
 C_0002878685250157375085 o-- C_0011218267209626974551 : +input

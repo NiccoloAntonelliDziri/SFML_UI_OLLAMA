@@ -7,7 +7,7 @@
 template <typename ResultType>
 class ThreadManager {
     public:
-    ThreadManager() : isResultReady(false) {
+    ThreadManager() : isResultReady(true) {
         this->future = this->promise.get_future();
     }
     ~ThreadManager() { this->thread.join(); }
@@ -34,9 +34,15 @@ class ThreadManager {
     };
 
     // Get result from promise
-    ResultType getResult() { return this->future.get(); }
+    inline ResultType getResult() { return this->future.get(); }
 
-    bool isReady() { return this->isResultReady; }
+    inline bool isReady() { return this->isResultReady; }
+
+    inline void join() {
+        this->thread.join();
+        this->promise = std::promise<ResultType>();
+        this->future = this->promise.get_future();
+    }
 
     private:
     std::thread thread;

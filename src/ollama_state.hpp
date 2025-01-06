@@ -5,6 +5,7 @@
 #include "constants.hpp"
 #include "multiline_text.hpp"
 #include "state.hpp"
+#include "thread_manager.hpp"
 
 void on_receive_response(const ollama::response &response);
 
@@ -21,7 +22,7 @@ class OllamaState : public State {
 
         this->response_callback = on_receive_response;
     }
-    ~OllamaState() { this->ollamathread.join(); }
+    ~OllamaState() = default;
 
     void init() override;
     void handleInput() override;
@@ -43,7 +44,7 @@ class OllamaState : public State {
 
     std::function<void(const ollama::response &)> response_callback;
 
-    std::thread ollamathread;
+    ThreadManager<void> ollamathread;
 
     ollama::messages messages;
 };
