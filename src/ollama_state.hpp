@@ -42,6 +42,7 @@ class OllamaState : public State {
 
     InputBox inputBox;
     sf::RectangleShape inputBoxBackground;
+    sf::IntRect inputBoxArea; // For easy input detection
 
     unsigned streamingCounter;
 

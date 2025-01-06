@@ -24,6 +24,8 @@ class InputManager {
     bool isMouseClickedOutsideArea(sf::IntRect area, sf::Mouse::Button button,
                                    sf::Event &event, sf::RenderWindow &window);
 
+    bool isMouseInArea(sf::IntRect area, sf::RenderWindow &window);
+
     // Retourne `true` si une action permettant
     // de fermer l'application est déclanchée.
     bool isWindowClosed(sf::Event &event);

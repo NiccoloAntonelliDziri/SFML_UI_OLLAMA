@@ -56,3 +56,8 @@ bool InputManager::isWindowClosed(sf::Event &event) {
     // possibilité d'ajouter d'autres conditions
     return false;
 }
+bool InputManager::isMouseInArea(sf::IntRect area, sf::RenderWindow &window) {
+    if (area.contains(sf::Mouse::getPosition(window)))
+        return true;
+    return false;
+}

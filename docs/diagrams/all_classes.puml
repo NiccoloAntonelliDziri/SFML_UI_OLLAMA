@@ -124,7 +124,6 @@ __
 +assets : AssetManager
 +input : InputManager
 +machine : StateMachine
-+messages : ollama::messages
 +music : MusicManager
 +window : sf::RenderWindow
 }
@@ -210,10 +209,29 @@ class C_0006905555226801011843 {
 __
 -isSelected : bool
 }
+class "ThreadManager<ResultType>" as C_0008931800749696307144
+class C_0008931800749696307144 {
++ThreadManager() : void
++~ThreadManager() : void
+..
++getResult() : ResultType
++isReady() : bool
++join() : void
++start<F,Args...>(F && f, Args &&... args) : void
+__
+-future : std::future<ResultType>
+-isResultReady : std::atomic<bool>
+-promise : std::promise<ResultType>
+-thread : std::thread
+}
+class "ThreadManager<void>" as C_0002020853330831851796
+class C_0002020853330831851796 {
+__
+}
 class "OllamaState" as C_0010767441053444769080
 class C_0010767441053444769080 {
 +OllamaState(AppDataRef data) : void
-+~OllamaState() : void
++~OllamaState() = default : void
 ..
 +draw(float dt) : void
 +handleInput() : void
@@ -224,25 +242,11 @@ __
 -inputBox : InputBox
 -inputBoxBackground : sf::RectangleShape
 -messages : ollama::messages
--ollamathread : std::thread
+-ollamathread : ThreadManager<void>
 -promptInput : std::string
 -response_callback : std::function<void (const ollama::response &)>
 -streamingCounter : unsigned int
 -temp : std::string
-}
-class "ThreadManager<ResultType>" as C_0008931800749696307144
-class C_0008931800749696307144 {
-+ThreadManager() : void
-+~ThreadManager() : void
-..
-+getResult() : ResultType
-+isReady() : bool
-+start<F,Args...>(F && f, Args &&... args) : void
-__
--future : std::future<ResultType>
--isResultReady : std::atomic<bool>
--promise : std::promise<ResultType>
--thread : std::thread
 }
 C_0013531716651485178890 ..> C_0001914138303902600425
 C_0006027996033599488936 ..|> C_0008758017994193186544
@@ -260,8 +264,10 @@ C_0006075958540417117804 <|-- C_0017227335679142879242
 
 C_0017227335679142879242 <|-- C_0006905555226801011843
 
+C_0002020853330831851796 ..|> C_0008931800749696307144
 C_0010767441053444769080 ..> C_0002878685250157375085
 C_0010767441053444769080 o-- C_0006905555226801011843 : -inputBox
+C_0010767441053444769080 o-- C_0002020853330831851796 : -ollamathread
 C_0001914138303902600425 <|-- C_0010767441053444769080
 
 

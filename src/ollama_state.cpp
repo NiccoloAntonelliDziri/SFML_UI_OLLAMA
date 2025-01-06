@@ -54,6 +54,12 @@ void OllamaState::init() {
     this->inputBox.setColor(color);
     this->inputBox.setPosition(cst.get<sf::Vector2f>("inputBoxTextPosition"));
     this->inputBox.setMaxLinesToDisplay(3);
+
+    this->inputBoxArea = {
+        static_cast<int>(this->inputBoxBackground.getPosition().x),
+        static_cast<int>(this->inputBoxBackground.getPosition().y),
+        static_cast<int>(this->inputBoxBackground.getSize().x),
+        static_cast<int>(this->inputBoxBackground.getSize().y)};
 }
 
 void OllamaState::handleInput() {
@@ -63,12 +69,9 @@ void OllamaState::handleInput() {
             this->data->window.close();
         }
         // InputBox is clicked enter input mode
-        if (this->data->input.isMouseClickedInArea(
-                {static_cast<int>(this->inputBoxBackground.getPosition().x),
-                 static_cast<int>(this->inputBoxBackground.getPosition().y),
-                 static_cast<int>(this->inputBoxBackground.getSize().x),
-                 static_cast<int>(this->inputBoxBackground.getSize().y)},
-                sf::Mouse::Left, event, this->data->window)) {
+        if (this->data->input.isMouseClickedInArea(this->inputBoxArea,
+                                                   sf::Mouse::Left, event,
+                                                   this->data->window)) {
 
             this->inputBox.setSelected(true);
             this->inputBox.setColor(cst.get<sf::Color>("textColor"));
@@ -76,13 +79,8 @@ void OllamaState::handleInput() {
 
             // InputBox is clicked outside exit input mode
         } else if (this->data->input.isMouseClickedOutsideArea(
-                       {static_cast<int>(
-                            this->inputBoxBackground.getPosition().x),
-                        static_cast<int>(
-                            this->inputBoxBackground.getPosition().y),
-                        static_cast<int>(this->inputBoxBackground.getSize().x),
-                        static_cast<int>(this->inputBoxBackground.getSize().y)},
-                       sf::Mouse::Left, event, this->data->window)) {
+                       this->inputBoxArea, sf::Mouse::Left, event,
+                       this->data->window)) {
 
             this->inputBox.setSelected(false);
 
@@ -93,13 +91,37 @@ void OllamaState::handleInput() {
             this->inputBox.write(cst["inputDefaultText"]);
         }
 
+        // Scroll text up and down
+
+        // Keyboard scrolling
+        if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::Up) {
+                std::cout << "UP" << std::endl;
+                this->inputBox.scrollUp();
+            } else if (event.key.code == sf::Keyboard::Down) {
+                std::cout << "DOWN" << std::endl;
+                this->inputBox.scrollDown();
+            }
+        }
+
+        // Mouse wheel scrolling
+        if (event.type == sf::Event::MouseWheelScrolled) {
+            if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+                if (event.mouseWheelScroll.delta > 0) {
+                    this->inputBox.scrollUp();
+                } else {
+                    this->inputBox.scrollDown();
+                }
+            }
+        }
+
         if (event.type == sf::Event::TextEntered) {
 
             this->inputBox.typedOn(event);
 
             // Wait for thread to finish previous request
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) &&
-                this->ollamathread.isReady()) {
+                this->ollamathread.isReady() && !this->promptInput.empty()) {
 
                 // CALL OLLAMA RESPONSE
                 llm::currentPrompt = this->promptInput;

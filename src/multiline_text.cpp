@@ -165,11 +165,20 @@ void ScrollTextInPlace::write(const std::string &text) {
     // Si il ne faut pas les afficher toutes
     // Update la position des lignes pour qu'elles restent au meme endroit
     if (this->maxLinesToDisplay != -1) {
+        int startBeforeOffset =
+            std::max(0, (int)this->lines.size() - this->maxLinesToDisplay);
         int start = std::max(0, (int)this->lines.size() -
                                     this->maxLinesToDisplay - this->offset);
         int end = std::min((int)this->lines.size(),
-                           start + this->maxLinesToDisplay - this->offset);
+                           startBeforeOffset + this->maxLinesToDisplay -
+                               this->offset);
 
+        std::cout << "start: " << start << " end: " << end << std::endl;
+        std::cout << "lines.size(): " << this->lines.size() << std::endl;
+        std::cout << "maxLinesToDisplay: " << this->maxLinesToDisplay
+                  << std::endl;
+
+        // Effacement du début et de la fin
         this->lines.erase(this->lines.begin() + end, this->lines.end());
         this->lines.erase(this->lines.begin(), this->lines.begin() + start);
 
@@ -183,14 +192,26 @@ void ScrollTextInPlace::write(const std::string &text) {
 }
 
 void ScrollTextInPlace::scrollUp() {
-    if (this->offset < (int)this->lines.size() - 1) {
-        this->offset++;
+    if (this->maxLinesToDisplay == -1) {
+        return;
     }
+    if (this->lines.size() + this->offset > this->maxLinesToDisplay) {
+        return;
+    }
+    this->offset++;
+    this->write(this->text);
+    std::cout << "offset: " << this->offset << std::endl;
 }
 void ScrollTextInPlace::scrollDown() {
-    if (this->offset > 0) {
-        this->offset--;
+    if (this->maxLinesToDisplay == -1) {
+        return;
     }
+    if (this->offset <= 0) {
+        return;
+    }
+    this->offset--;
+    this->write(this->text);
+    std::cout << "offset: " << this->offset << std::endl;
 }
 
 /* InputBox */
@@ -199,6 +220,7 @@ void InputBox::typedOn(sf::Event input) {
     if (!this->isSelected) {
         return;
     }
+
     int charTyped = input.text.unicode;
     if (charTyped < 128) {
         // 8 is the backspace key
