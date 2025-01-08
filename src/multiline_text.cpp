@@ -237,3 +237,5 @@ void InputBox::typedOn(sf::Event input) {
         }
     }
 }
+
+/* ChatBox */

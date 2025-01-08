@@ -67,7 +67,7 @@ void OllamaState::handleInput() {
 
             this->inputBox.setSelected(true);
             this->inputBox.setColor(cst.get<sf::Color>("textColor"));
-            this->inputBox.write("");
+            // this->inputBox.write("");
 
             // InputBox is clicked outside exit input mode
         } else if (this->data->input.isMouseClickedOutsideArea(
@@ -80,29 +80,38 @@ void OllamaState::handleInput() {
             sf::Color color = this->inputBox.getColor();
             color.a = 128;
             this->inputBox.setColor(color);
-            this->inputBox.write(cst["inputDefaultText"]);
+            // this->inputBox.write(cst["inputDefaultText"]);
         }
 
         // Scroll text up and down
 
-        // Keyboard scrolling
-        if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::Up) {
-                // std::cout << "UP" << std::endl;
-                this->inputBox.scrollUp();
-            } else if (event.key.code == sf::Keyboard::Down) {
-                // std::cout << "DOWN" << std::endl;
-                this->inputBox.scrollDown();
-            }
-        }
-
-        // Mouse wheel scrolling
-        if (event.type == sf::Event::MouseWheelScrolled) {
-            if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-                if (event.mouseWheelScroll.delta > 0) {
+        // If inputBox is selected
+        if (this->inputBox.isSelected()) {
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Up) {
                     this->inputBox.scrollUp();
-                } else {
+                } else if (event.key.code == sf::Keyboard::Down) {
                     this->inputBox.scrollDown();
+                }
+            }
+
+            // Mouse wheel scrolling
+            if (event.type == sf::Event::MouseWheelScrolled) {
+                if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+                    if (event.mouseWheelScroll.delta > 0) {
+                        this->inputBox.scrollUp();
+                    } else {
+                        this->inputBox.scrollDown();
+                    }
+                }
+            }
+        } else { // if inputBox is not selected
+            if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Up) {
+                    std::cout << "UP" << std::endl;
+
+                } else if (event.key.code == sf::Keyboard::Down) {
+                    std::cout << "DOWN" << std::endl;
                 }
             }
         }

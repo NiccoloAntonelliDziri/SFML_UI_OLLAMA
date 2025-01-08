@@ -118,14 +118,14 @@ class InputBox : public ScrollTextInPlace {
     bool selected;
 };
 
-// TODO
 class ChatBox : public MultilineText {
     public:
     ChatBox() = default;
-    ChatBox(const sf::Font &font,
+    ChatBox(const sf::Font &font, const std::string role,
             int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
             int characterSize = cst.get<int>("fontSize"))
-        : MultilineText(font, numberCharacterLimit, characterSize) {}
+        : MultilineText(font, numberCharacterLimit, characterSize), role(role) {
+    }
 
     // not the same scrollUp or scrollDown as in ScrollTextInPlace
 
@@ -133,4 +133,7 @@ class ChatBox : public MultilineText {
 
     void scrollUp();
     void scrollDown();
+
+    private:
+    std::string role;
 };
