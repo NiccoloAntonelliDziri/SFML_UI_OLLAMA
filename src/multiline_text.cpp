@@ -13,7 +13,7 @@ void MultilineText::draw(sf::RenderTarget &target,
 }
 
 void MultilineText::write(const std::string &text) {
-    this->text = text;
+    this->text = this->tabToSpaces(text);
 
     this->lines.clear();
 
@@ -55,6 +55,8 @@ void MultilineText::write(const std::string &text) {
                               (this->characterSize + this->lineSpacing));
         this->lines.push_back(t);
     }
+
+    this->numberLines = this->lines.size();
 }
 
 void MultilineText::setFont(const sf::Font &font) {
@@ -116,10 +118,22 @@ void MultilineText::setPosition(float x, float y) {
     this->setPosition(sf::Vector2f(x, y));
 }
 
+std::string MultilineText::tabToSpaces(const std::string &text) const {
+    std::string result = "";
+    for (char c : text) {
+        if (c == '\t') {
+            result += "    ";
+        } else {
+            result += c;
+        }
+    }
+    return result;
+}
+
 /* ScrollTextInPlace */
 
 void ScrollTextInPlace::write(const std::string &text) {
-    this->text = text;
+    this->text = this->tabToSpaces(text);
 
     this->lines.clear();
 
@@ -162,6 +176,8 @@ void ScrollTextInPlace::write(const std::string &text) {
         this->lines.push_back(t);
     }
 
+    this->numberLines = this->lines.size();
+
     // Si il ne faut pas les afficher toutes
     // Update la position des lignes pour qu'elles restent au meme endroit
     if (this->maxLinesToDisplay != -1) {
@@ -190,14 +206,21 @@ void ScrollTextInPlace::scrollUp() {
     if (this->maxLinesToDisplay == -1) {
         return;
     }
-    if ((int)this->lines.size() + this->offset > this->maxLinesToDisplay) {
+    if (this->getNumberLines() <= this->maxLinesToDisplay) {
         return;
     }
+    if (this->getNumberLines() - offset <= this->maxLinesToDisplay) {
+        return;
+    }
+
     this->offset++;
     this->write(this->text);
 }
 void ScrollTextInPlace::scrollDown() {
     if (this->maxLinesToDisplay == -1) {
+        return;
+    }
+    if (this->getNumberLines() <= this->maxLinesToDisplay) {
         return;
     }
     if (this->offset <= 0) {
@@ -238,4 +261,80 @@ void InputBox::typedOn(sf::Event input) {
     }
 }
 
-/* ChatBox */
+/* MessageBox */
+void MessageBox::write(const std::string &text) {
+    this->text = this->role + ":\n" + this->tabToSpaces(text);
+
+    this->lines.clear();
+
+    int charCounter = 0;
+    int lineCounter = 0;
+    std::string line = "";
+    for (char c : this->text) {
+        if (charCounter == this->numberCharacterLimit || c == '\n') {
+
+            sf::Text t;
+            t.setFont(this->font);
+            t.setString(line);
+            t.setCharacterSize(this->characterSize);
+            t.setFillColor(this->color);
+            t.setPosition(this->getPosition().x,
+                          this->getPosition().y +
+                              lineCounter *
+                                  (this->characterSize + this->lineSpacing));
+            this->lines.push_back(t);
+
+            // scroll up so that the last line is always at the bottom
+
+            lineCounter++;
+            line = "";
+            charCounter = 0;
+        }
+        if (c != '\n') {
+            line += c;
+            charCounter++;
+        }
+    }
+    // Add the last line
+    if (line != "") {
+        sf::Text t;
+        t.setFont(this->font);
+        t.setString(line);
+        t.setCharacterSize(this->characterSize);
+        t.setFillColor(this->color);
+        t.setPosition(this->getPosition().x,
+                      this->getPosition().y +
+                          lineCounter *
+                              (this->characterSize + this->lineSpacing));
+        this->lines.push_back(t);
+    }
+    if (this->lines.size() < 1) {
+        std::cout << "No lines input" << std::endl;
+        return;
+    }
+
+    this->numberLines = this->lines.size();
+
+    // Déplacement des lignes pour que la dernière soit toujours en bas alignée
+    std::cout << "Number of lines: " << this->lines.size() << std::endl;
+    std::cout << "movement: "
+              << (1 - this->lines.size()) *
+                     (this->characterSize + this->lineSpacing)
+              << std::endl;
+    for (auto &line : this->lines) {
+        line.move(0, (1 - (int)this->lines.size()) *
+                         (this->characterSize + this->lineSpacing));
+    }
+}
+
+void MessageBox::scrollUp() {
+    for (auto &line : this->lines) {
+        line.move(0, -this->characterSize - this->lineSpacing);
+    }
+}
+
+void MessageBox::scrollDown() {
+    for (auto &line : this->lines) {
+        line.move(0, this->characterSize + this->lineSpacing);
+    }
+}

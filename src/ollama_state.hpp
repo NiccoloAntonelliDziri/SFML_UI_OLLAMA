@@ -19,6 +19,26 @@ class OllamaState : public State {
     OllamaState(AppDataRef data) : data(data), streamingCounter(0) {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
+        // Couleur noire + transparence + fond blanc = gris
+        sf::Color color = cst.get<sf::Color>("textColor");
+        color.a = 128;
+        this->inputBox.setColor(color);
+        this->inputBox.setPosition(
+            cst.get<sf::Vector2f>("inputBoxTextPosition"));
+        this->inputBox.setMaxLinesToDisplay(3);
+
+        this->inputBoxBackground.setPosition(
+            cst.get<sf::Vector2f>("inputBoxPosition"));
+        this->inputBoxBackground.setSize(cst.get<sf::Vector2f>("inputBoxSize"));
+        this->inputBoxBackground.setFillColor(sf::Color::Transparent);
+        this->inputBoxBackground.setOutlineColor(
+            cst.get<sf::Color>("inputBoxOutlineColor"));
+        this->inputBoxBackground.setOutlineThickness(
+            cst.get<float>("inputBoxThickness"));
+
+        this->chatBox =
+            MessageBox(this->data->assets.getFont(cst["fontName"]), "user");
+        this->chatBox.setPosition(cst.get<sf::Vector2f>("bottomChatPosition"));
 
         ollama::show_requests(true);
         ollama::show_replies(true);
@@ -41,6 +61,8 @@ class OllamaState : public State {
     InputBox inputBox;
     sf::RectangleShape inputBoxBackground; // Rectangle autour du texte input
     sf::IntRect inputBoxArea;              // For easy input detection
+
+    MessageBox chatBox;
 
     unsigned streamingCounter;
 

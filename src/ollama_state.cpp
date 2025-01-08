@@ -29,23 +29,7 @@ void generate(const std::string &model, const ollama::messages messages,
 }
 
 void OllamaState::init() {
-    this->inputBoxBackground.setPosition(
-        cst.get<sf::Vector2f>("inputBoxPosition"));
-    this->inputBoxBackground.setSize(cst.get<sf::Vector2f>("inputBoxSize"));
-    this->inputBoxBackground.setFillColor(sf::Color::Transparent);
-    this->inputBoxBackground.setOutlineColor(
-        cst.get<sf::Color>("inputBoxOutlineColor"));
-    this->inputBoxBackground.setOutlineThickness(
-        cst.get<float>("inputBoxThickness"));
-
     this->inputBox.write(cst["inputDefaultText"]);
-
-    // Couleur noire + transparence + fond blanc = gris
-    sf::Color color = cst.get<sf::Color>("textColor");
-    color.a = 128;
-    this->inputBox.setColor(color);
-    this->inputBox.setPosition(cst.get<sf::Vector2f>("inputBoxTextPosition"));
-    this->inputBox.setMaxLinesToDisplay(3);
 
     this->inputBoxArea = {
         static_cast<int>(this->inputBoxBackground.getPosition().x),
@@ -67,7 +51,11 @@ void OllamaState::handleInput() {
 
             this->inputBox.setSelected(true);
             this->inputBox.setColor(cst.get<sf::Color>("textColor"));
-            // this->inputBox.write("");
+
+            // if text is default, clear it
+            if (this->inputBox.getText() == cst["inputDefaultText"]) {
+                this->inputBox.write("");
+            }
 
             // InputBox is clicked outside exit input mode
         } else if (this->data->input.isMouseClickedOutsideArea(
@@ -80,7 +68,11 @@ void OllamaState::handleInput() {
             sf::Color color = this->inputBox.getColor();
             color.a = 128;
             this->inputBox.setColor(color);
-            // this->inputBox.write(cst["inputDefaultText"]);
+
+            // If input is empty, write default text
+            if (this->inputBox.getText().empty()) {
+                this->inputBox.write(cst["inputDefaultText"]);
+            }
         }
 
         // Scroll text up and down
@@ -109,9 +101,11 @@ void OllamaState::handleInput() {
             if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Up) {
                     std::cout << "UP" << std::endl;
+                    this->chatBox.scrollUp();
 
                 } else if (event.key.code == sf::Keyboard::Down) {
                     std::cout << "DOWN" << std::endl;
+                    this->chatBox.scrollDown();
                 }
             }
         }
@@ -134,6 +128,8 @@ void OllamaState::handleInput() {
                     this->messages.push_back(
                         ollama::message("user", this->promptInput));
 
+                    this->chatBox.write(this->promptInput);
+
                     this->ollamathread.start(generate, cst["modelLLMname"],
                                              this->messages,
                                              on_receive_response);
@@ -154,6 +150,7 @@ void OllamaState::handleInput() {
 void OllamaState::draw(float dt) {
     this->data->window.draw(this->inputBox);
     this->data->window.draw(this->inputBoxBackground);
+    this->data->window.draw(this->chatBox);
 }
 
 void OllamaState::update(float dt) {

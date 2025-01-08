@@ -41,6 +41,7 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     }
     inline std::string getText() const { return this->text; }
     inline sf::Vector2f getPosition() const { return this->position; }
+    inline int getNumberLines() const { return this->numberLines; }
 
     // Operator << is converted to a string
     std::ostream &operator<<(std::ostream &os) {
@@ -54,6 +55,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     sf::Vector2f position;
 
     protected:
+    std::string tabToSpaces(const std::string &text) const;
+
     sf::Font font;
     sf::Color color;
 
@@ -61,6 +64,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
 
     std::string text;
     std::vector<sf::Text> lines;
+    int numberLines; // number of lines in the text (can be different from
+                     // lines.size() because of what is displayed)
 
     int characterSize;
     int lineSpacing;
@@ -118,19 +123,19 @@ class InputBox : public ScrollTextInPlace {
     bool selected;
 };
 
-class ChatBox : public MultilineText {
+class MessageBox : public MultilineText {
     public:
-    ChatBox() = default;
-    ChatBox(const sf::Font &font, const std::string role,
-            int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
-            int characterSize = cst.get<int>("fontSize"))
+    MessageBox() = default;
+    MessageBox(
+        const sf::Font &font, std::string role,
+        int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
+        int characterSize = cst.get<int>("fontSize"))
         : MultilineText(font, numberCharacterLimit, characterSize), role(role) {
     }
 
-    // not the same scrollUp or scrollDown as in ScrollTextInPlace
-
     void write(const std::string &text);
 
+    // not the same scrollUp or scrollDown as in ScrollTextInPlace
     void scrollUp();
     void scrollDown();
 
