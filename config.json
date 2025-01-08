@@ -48,10 +48,6 @@
         "x": 1131,
         "y": 83
     },
-    "chatMessagesBoxPosition": {
-        "x": 72,
-        "y": 500
-    },
     "inputDefaultText": "Send message.",
     "modelLLMname": "granite3-moe"
 }

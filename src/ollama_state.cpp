@@ -52,10 +52,6 @@ void OllamaState::init() {
         static_cast<int>(this->inputBoxBackground.getPosition().y),
         static_cast<int>(this->inputBoxBackground.getSize().x),
         static_cast<int>(this->inputBoxBackground.getSize().y)};
-
-    this->messageBox.setPosition(
-        cst.get<sf::Vector2f>("chatMessagesBoxPosition"));
-    this->messageBox.write("Hello, I'm Ollama, your personal assistant.");
 }
 
 void OllamaState::handleInput() {
@@ -90,8 +86,7 @@ void OllamaState::handleInput() {
         // Scroll text up and down
 
         // Keyboard scrolling
-        if (this->inputBox.isSelected() &&
-            event.type == sf::Event::KeyPressed) {
+        if (event.type == sf::Event::KeyPressed) {
             if (event.key.code == sf::Keyboard::Up) {
                 // std::cout << "UP" << std::endl;
                 this->inputBox.scrollUp();
@@ -102,8 +97,7 @@ void OllamaState::handleInput() {
         }
 
         // Mouse wheel scrolling
-        if (this->inputBox.isSelected() &&
-            event.type == sf::Event::MouseWheelScrolled) {
+        if (event.type == sf::Event::MouseWheelScrolled) {
             if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
                 if (event.mouseWheelScroll.delta > 0) {
                     this->inputBox.scrollUp();
@@ -151,7 +145,6 @@ void OllamaState::handleInput() {
 void OllamaState::draw(float dt) {
     this->data->window.draw(this->inputBox);
     this->data->window.draw(this->inputBoxBackground);
-    this->data->window.draw(this->messageBox);
 }
 
 void OllamaState::update(float dt) {
