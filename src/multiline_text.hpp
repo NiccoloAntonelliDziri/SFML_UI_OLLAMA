@@ -107,15 +107,15 @@ class InputBox : public ScrollTextInPlace {
              int characterSize = cst.get<int>("fontSize"))
         : ScrollTextInPlace(font, numberCharacterLimit, characterSize) {
 
-        this->isSelected = false;
+        this->selected = false;
     }
 
     void typedOn(sf::Event input);
-    inline void setSelected(bool selected) { this->isSelected = selected; }
-    inline bool getSelected() const { return this->isSelected; }
+    inline void setSelected(bool s) { this->selected = s; }
+    inline bool isSelected() const { return this->selected; }
 
     private:
-    bool isSelected;
+    bool selected;
 };
 
 // TODO

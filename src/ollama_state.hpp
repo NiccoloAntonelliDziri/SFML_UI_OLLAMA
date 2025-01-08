@@ -39,8 +39,8 @@ class OllamaState : public State {
     std::string temp;
 
     InputBox inputBox;
-    sf::RectangleShape inputBoxBackground;
-    sf::IntRect inputBoxArea; // For easy input detection
+    sf::RectangleShape inputBoxBackground; // Rectangle autour du texte input
+    sf::IntRect inputBoxArea;              // For easy input detection
 
     unsigned streamingCounter;
 

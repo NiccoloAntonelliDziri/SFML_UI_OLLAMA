@@ -210,7 +210,7 @@ void ScrollTextInPlace::scrollDown() {
 /* InputBox */
 
 void InputBox::typedOn(sf::Event input) {
-    if (!this->isSelected) {
+    if (!this->selected) {
         return;
     }
 
@@ -228,7 +228,7 @@ void InputBox::typedOn(sf::Event input) {
         }
         // 27 is the escape key
         else if (charTyped == 27) {
-            this->isSelected = false;
+            this->selected = false;
             // Peut-être un jour implémenter les flèches pour se déplacer dans
             // le texte Ou des caractères spéciaux ou des raccourcis clavier ou
             // la touche Suppr
