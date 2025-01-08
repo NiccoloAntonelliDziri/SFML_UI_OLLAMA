@@ -48,6 +48,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
         return os;
     }
 
+    friend class ChatMessages;
+
     private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
@@ -107,30 +109,56 @@ class InputBox : public ScrollTextInPlace {
              int characterSize = cst.get<int>("fontSize"))
         : ScrollTextInPlace(font, numberCharacterLimit, characterSize) {
 
-        this->isSelected = false;
+        this->selected = false;
     }
 
     void typedOn(sf::Event input);
-    inline void setSelected(bool selected) { this->isSelected = selected; }
-    inline bool getSelected() const { return this->isSelected; }
+    inline void setSelected(bool selected) { this->selected = selected; }
+    inline bool isSelected() const { return this->selected; }
 
     private:
-    bool isSelected;
+    bool selected;
 };
 
-// TODO
-class ChatBox : public MultilineText {
+class MessageBox : public MultilineText {
     public:
-    ChatBox() = default;
-    ChatBox(const sf::Font &font,
-            int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
-            int characterSize = cst.get<int>("fontSize"))
-        : MultilineText(font, numberCharacterLimit, characterSize) {}
-
-    // not the same scrollUp or scrollDown as in ScrollTextInPlace
+    MessageBox() = default;
+    MessageBox(
+        const sf::Font &font, std::string role,
+        int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"),
+        int characterSize = cst.get<int>("fontSize"))
+        : MultilineText(font, numberCharacterLimit, characterSize), role(role) {
+    }
 
     void write(const std::string &text);
 
+    // not the same scrollUp or scrollDown as in ScrollTextInPlace
+
     void scrollUp();
     void scrollDown();
+
+    inline std::string getRole() const { return this->role; }
+    inline void setRole(const std::string role) { this->role = role; }
+
+    private:
+    std::string role;
+};
+
+class ChatMessages : public std::vector<MessageBox>,
+                     public sf::Drawable,
+                     public sf::Transformable {
+    public:
+    ChatMessages() = default;
+    ChatMessages(const std::initializer_list<MessageBox> &messages) {
+        for (MessageBox message : messages) {
+            this->push_back(message);
+        }
+    }
+    ~ChatMessages() = default;
+
+    void scrollUp();
+    void scrollDown();
+
+    private:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 };

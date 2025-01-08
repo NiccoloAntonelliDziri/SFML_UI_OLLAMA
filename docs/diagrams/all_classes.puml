@@ -11,6 +11,10 @@ abstract C_0001914138303902600425 {
 {abstract} +update(float dt) = 0 : void
 __
 }
+class "std::vector<MessageBox>" as C_0013797594922140478519
+class C_0013797594922140478519 {
+__
+}
 class "StateMachine" as C_0013531716651485178890
 class C_0013531716651485178890 {
 +StateMachine() = default : void
@@ -87,6 +91,7 @@ class C_0011218267209626974551 {
 +getMousePosition(sf::RenderWindow & window) const : sf::Vector2i
 +isMouseClickedInArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
 +isMouseClickedOutsideArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
++isMouseInArea(sf::IntRect area, sf::RenderWindow & window) : bool
 +isSpriteClicked(sf::Sprite sprite, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
 +isWindowClosed(sf::Event & event) : bool
 __
@@ -202,12 +207,32 @@ class C_0006905555226801011843 {
 +InputBox() = default : void
 +InputBox(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
--draw(sf::RenderTarget & target, sf::RenderStates states) const : void
 +getSelected() const : bool
 +setSelected(bool selected) : void
 +typedOn(sf::Event input) : void
 __
 -isSelected : bool
+}
+class "MessageBox" as C_0014537214693256561526
+class C_0014537214693256561526 {
++MessageBox() = default : void
++MessageBox(const sf::Font & font, std::string role, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
+..
++scrollDown() : void
++scrollUp() : void
+__
+-role : std::string
+}
+class "ChatMessages" as C_0009063492162281505680
+class C_0009063492162281505680 {
++ChatMessages() = default : void
++ChatMessages(const std::initializer_list<MessageBox> & messages) : void
++~ChatMessages() = default : void
+..
+-draw(sf::RenderTarget & target, sf::RenderStates states) const : void
++scrollDown() : void
++scrollUp() : void
+__
 }
 class "ThreadManager<ResultType>" as C_0008931800749696307144
 class C_0008931800749696307144 {
@@ -216,7 +241,7 @@ class C_0008931800749696307144 {
 ..
 +getResult() : ResultType
 +isReady() : bool
-+join() : void
++reset() : void
 +start<F,Args...>(F && f, Args &&... args) : void
 __
 -future : std::future<ResultType>
@@ -240,14 +265,15 @@ class C_0010767441053444769080 {
 __
 -data : AppDataRef
 -inputBox : InputBox
+-inputBoxArea : sf::IntRect
 -inputBoxBackground : sf::RectangleShape
 -messages : ollama::messages
 -ollamathread : ThreadManager<void>
 -promptInput : std::string
--response_callback : std::function<void (const ollama::response &)>
 -streamingCounter : unsigned int
 -temp : std::string
 }
+C_0013797594922140478519 ..> C_0014537214693256561526
 C_0013531716651485178890 ..> C_0001914138303902600425
 C_0006027996033599488936 ..|> C_0008758017994193186544
 C_0010335427585328718123 ..> C_0000025472147750072530
@@ -260,9 +286,15 @@ C_0002878685250157375085 o-- C_0013018981818162392349 : +music
 C_0007275061059561579929 ..> C_0002878685250157375085
 C_0001914138303902600425 <|-- C_0007275061059561579929
 
+C_0006075958540417117804 <.. C_0009063492162281505680 : +<<friend>>
 C_0006075958540417117804 <|-- C_0017227335679142879242
 
 C_0017227335679142879242 <|-- C_0006905555226801011843
+
+C_0006075958540417117804 <|-- C_0014537214693256561526
+
+C_0009063492162281505680 ..> C_0014537214693256561526
+C_0013797594922140478519 <|-- C_0009063492162281505680
 
 C_0002020853330831851796 ..|> C_0008931800749696307144
 C_0010767441053444769080 ..> C_0002878685250157375085

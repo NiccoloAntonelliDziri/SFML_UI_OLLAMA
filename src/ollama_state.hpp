@@ -20,6 +20,9 @@ class OllamaState : public State {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
 
+        this->messageBox =
+            MessageBox(this->data->assets.getFont(cst["fontName"]), "user");
+
         ollama::show_requests(true);
         ollama::show_replies(true);
     }
@@ -42,9 +45,12 @@ class OllamaState : public State {
     sf::RectangleShape inputBoxBackground;
     sf::IntRect inputBoxArea; // For easy input detection
 
+    // ChatMessages chatMessagesBox;
+    ollama::messages messages;
+
+    MessageBox messageBox;
+
     unsigned streamingCounter;
 
     ThreadManager<void> ollamathread;
-
-    ollama::messages messages;
 };

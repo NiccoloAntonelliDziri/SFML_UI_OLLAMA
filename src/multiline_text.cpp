@@ -210,7 +210,7 @@ void ScrollTextInPlace::scrollDown() {
 /* InputBox */
 
 void InputBox::typedOn(sf::Event input) {
-    if (!this->isSelected) {
+    if (!this->selected) {
         return;
     }
 
@@ -228,12 +228,96 @@ void InputBox::typedOn(sf::Event input) {
         }
         // 27 is the escape key
         else if (charTyped == 27) {
-            this->isSelected = false;
+            this->selected = false;
             // Peut-être un jour implémenter les flèches pour se déplacer dans
             // le texte Ou des caractères spéciaux ou des raccourcis clavier ou
             // la touche Suppr
         } else {
             this->write(this->text + static_cast<char>(charTyped));
         }
+    }
+}
+
+/* MessageBox*/
+void MessageBox::scrollUp() {
+    sf::Vector2f pos = this->getPosition();
+    this->setPosition(pos.x, pos.y - this->characterSize - this->lineSpacing);
+    this->write(this->text);
+}
+
+void MessageBox::scrollDown() {
+    sf::Vector2f pos = this->getPosition();
+    this->setPosition(pos.x, pos.y + this->characterSize + this->lineSpacing);
+    this->write(this->text);
+}
+void MessageBox::write(const std::string &text) {
+    this->text = this->role + " : " + text;
+
+    this->lines.clear();
+
+    int charCounter = 0;
+    int lineCounter = 0;
+    std::string line = "";
+    for (char c : text) {
+        if (charCounter == this->numberCharacterLimit || c == '\n') {
+
+            sf::Text t;
+            t.setFont(this->font);
+            t.setString(line);
+            t.setCharacterSize(this->characterSize);
+            t.setFillColor(this->color);
+            t.setPosition(this->getPosition().x,
+                          this->getPosition().y +
+                              lineCounter *
+                                  (this->characterSize + this->lineSpacing));
+            this->scrollUp();
+            this->lines.push_back(t);
+            lineCounter++;
+            line = "";
+            charCounter = 0;
+        }
+        if (c != '\n') {
+            line += c;
+            charCounter++;
+        }
+    }
+    // Add the last line
+    if (line != "") {
+        sf::Text t;
+        t.setFont(this->font);
+        t.setString(line);
+        t.setCharacterSize(this->characterSize);
+        t.setFillColor(this->color);
+        t.setPosition(this->getPosition().x,
+                      this->getPosition().y +
+                          lineCounter *
+                              (this->characterSize + this->lineSpacing));
+        this->lines.push_back(t);
+    }
+    // this->scrollUp();
+}
+
+/* ChatMessages */
+
+void ChatMessages::draw(sf::RenderTarget &target,
+                        sf::RenderStates states) const {
+    states.transform *= getTransform();
+    // no texture
+    states.texture = nullptr;
+
+    for (auto it = this->begin(); it != this->end(); it++) {
+        target.draw(*it, states);
+    }
+}
+
+void ChatMessages::scrollUp() {
+    for (auto it = this->begin(); it != this->end(); it++) {
+        it->scrollUp();
+    }
+}
+
+void ChatMessages::scrollDown() {
+    for (auto it = this->begin(); it != this->end(); it++) {
+        it->scrollDown();
     }
 }
