@@ -49,6 +49,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
         return os;
     }
 
+    friend class ChatBox;
+
     private:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
@@ -112,7 +114,7 @@ class InputBox : public ScrollTextInPlace {
              int characterSize = cst.get<int>("fontSize"))
         : ScrollTextInPlace(font, numberCharacterLimit, characterSize) {
 
-        this->selected = false;
+        this->selected = true;
     }
 
     void typedOn(sf::Event input);
@@ -135,10 +137,37 @@ class MessageBox : public MultilineText {
 
     void write(const std::string &text);
 
-    // not the same scrollUp or scrollDown as in ScrollTextInPlace
+    // not the same scrollUp as in ScrollTextInPlace
     void scrollUp();
+    // not the same scrollDown as in ScrollTextInPlace
     void scrollDown();
 
     private:
     std::string role;
+};
+
+// This class is a vector of MessageBox.
+// Do not use push_back, use addMessage instead.
+// Do not set the position of the ChatBox, it is not used.
+class ChatBox : public std::vector<MessageBox>,
+                public sf::Drawable,
+                public sf::Transformable {
+    public:
+    ChatBox() : std::vector<MessageBox>(), totalNumberLines(0) {}
+    ~ChatBox() = default;
+
+    // parameter: the range of messages to scroll
+    void scrollUp(int begin = 0, int end = -1);
+    void scrollDown(int begin = 0, int end = -1);
+
+    inline int getTotalNumberLines() const { return this->totalNumberLines; }
+
+    // Add a message to the ChatBox.
+    // Use this function instead of push_back.
+    void addMessage(const MessageBox &message);
+
+    private:
+    void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
+
+    int totalNumberLines;
 };

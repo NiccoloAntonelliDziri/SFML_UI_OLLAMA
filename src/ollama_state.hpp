@@ -16,7 +16,9 @@ void generate(const std::string &model, const ollama::messages messages,
 
 class OllamaState : public State {
     public:
-    OllamaState(AppDataRef data) : data(data), streamingCounter(0) {
+    OllamaState(AppDataRef data)
+        : data(data), scrollingOffset(0), streamingCounter(0),
+          currentMessageLineCounter(2) {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
         // Couleur noire + transparence + fond blanc = gris
@@ -36,9 +38,17 @@ class OllamaState : public State {
         this->inputBoxBackground.setOutlineThickness(
             cst.get<float>("inputBoxThickness"));
 
-        this->chatBox =
+        this->userMessageBox =
             MessageBox(this->data->assets.getFont(cst["fontName"]), "user");
-        this->chatBox.setPosition(cst.get<sf::Vector2f>("bottomChatPosition"));
+        this->userMessageBox.setPosition(
+            cst.get<sf::Vector2f>("bottomChatPosition"));
+
+        this->llmMessageBox = MessageBox(
+            this->data->assets.getFont(cst["fontName"]), cst["modelLLMname"]);
+        this->llmMessageBox.setPosition(
+            cst.get<sf::Vector2f>("bottomChatPosition"));
+
+        // this->chatBox.setPosition(cst.get<sf::Vector2f>("bottomChatPosition"));
 
         ollama::show_requests(true);
         ollama::show_replies(true);
@@ -62,9 +72,15 @@ class OllamaState : public State {
     sf::RectangleShape inputBoxBackground; // Rectangle autour du texte input
     sf::IntRect inputBoxArea;              // For easy input detection
 
-    MessageBox chatBox;
+    ChatBox chatBox;
+    int scrollingOffset; // To scroll the chatbox and go back to the bottom
+                         // after
 
-    unsigned streamingCounter;
+    MessageBox userMessageBox; // Temporary message box for user
+    MessageBox llmMessageBox;  // Temporary message box for response
+
+    unsigned streamingCounter; // For the streaming effect, updating the chatbox
+    unsigned currentMessageLineCounter; // For the current message llmMessageBox
 
     ThreadManager<void> ollamathread;
 

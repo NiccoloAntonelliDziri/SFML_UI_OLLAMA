@@ -38,6 +38,10 @@ void MultilineText::write(const std::string &text) {
             charCounter = 0;
         }
         if (c != '\n') {
+            // never begin a line with a space
+            if (charCounter == 0 && c == ' ') {
+                continue;
+            }
             line += c;
             charCounter++;
         }
@@ -46,6 +50,10 @@ void MultilineText::write(const std::string &text) {
     if (line != "") {
         sf::Text t;
         t.setFont(this->font);
+        // remove beginning space
+        if (line[0] == ' ') {
+            line = line.substr(1);
+        }
         t.setString(line);
         t.setCharacterSize(this->characterSize);
         t.setFillColor(this->color);
@@ -158,6 +166,10 @@ void ScrollTextInPlace::write(const std::string &text) {
             charCounter = 0;
         }
         if (c != '\n') {
+            // never begin a line with a space
+            if (charCounter == 0 && c == ' ') {
+                continue;
+            }
             line += c;
             charCounter++;
         }
@@ -166,6 +178,10 @@ void ScrollTextInPlace::write(const std::string &text) {
     if (line != "") {
         sf::Text t;
         t.setFont(this->font);
+        // remove beginning space
+        if (line[0] == ' ') {
+            line = line.substr(1);
+        }
         t.setString(line);
         t.setCharacterSize(this->characterSize);
         t.setFillColor(this->color);
@@ -291,6 +307,10 @@ void MessageBox::write(const std::string &text) {
             charCounter = 0;
         }
         if (c != '\n') {
+            // never begin a line with a space
+            if (charCounter == 0 && c == ' ') {
+                continue;
+            }
             line += c;
             charCounter++;
         }
@@ -299,6 +319,10 @@ void MessageBox::write(const std::string &text) {
     if (line != "") {
         sf::Text t;
         t.setFont(this->font);
+        // remove beginning space
+        if (line[0] == ' ') {
+            line = line.substr(1);
+        }
         t.setString(line);
         t.setCharacterSize(this->characterSize);
         t.setFillColor(this->color);
@@ -316,11 +340,6 @@ void MessageBox::write(const std::string &text) {
     this->numberLines = this->lines.size();
 
     // Déplacement des lignes pour que la dernière soit toujours en bas alignée
-    std::cout << "Number of lines: " << this->lines.size() << std::endl;
-    std::cout << "movement: "
-              << (1 - this->lines.size()) *
-                     (this->characterSize + this->lineSpacing)
-              << std::endl;
     for (auto &line : this->lines) {
         line.move(0, (1 - (int)this->lines.size()) *
                          (this->characterSize + this->lineSpacing));
@@ -337,4 +356,44 @@ void MessageBox::scrollDown() {
     for (auto &line : this->lines) {
         line.move(0, this->characterSize + this->lineSpacing);
     }
+}
+
+/* ChatBox */
+
+void ChatBox::draw(sf::RenderTarget &target, sf::RenderStates states) const {
+    states.transform *= getTransform();
+    // no texture
+    states.texture = nullptr;
+
+    // Draw all the messages
+    for (auto i = this->begin(); i != this->end(); i++) {
+        target.draw(*i, states);
+    }
+}
+void ChatBox::scrollUp(int begin, int end) {
+    if (end == -1) {
+        end = this->size();
+    }
+    for (int i = begin; i < end; i++) {
+        this->at(i).scrollUp();
+    }
+}
+void ChatBox::scrollDown(int begin, int end) {
+    if (end == -1) {
+        end = this->size();
+    }
+    for (int i = begin; i < end; i++) {
+        this->at(i).scrollDown();
+    }
+}
+void ChatBox::addMessage(const MessageBox &message) {
+    int msgLines = message.getNumberLines();
+    this->totalNumberLines += msgLines;
+    if (msgLines == 0) {
+        return;
+    }
+    for (int i = 0; i < msgLines; i++) {
+        this->scrollUp();
+    }
+    this->push_back(message);
 }

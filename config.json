@@ -35,6 +35,12 @@
         "b": 0,
         "a": 255
     },
+    "textColorNotActive": {
+        "r": 0,
+        "g": 0,
+        "b": 0,
+        "a": 127
+    },
     "inputBoxThickness": 2,
     "inputBoxTextPosition": {
         "x": 78,
@@ -52,6 +58,7 @@
         "x": 72,
         "y": 500
     },
+    "maxNumberLinesChatToDisplay": 10,
     "inputDefaultText": "Send message.",
     "modelLLMname": "granite3-moe"
 }
