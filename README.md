@@ -22,3 +22,4 @@ ollama create Cecile -f modelfile
 ```
 make run
 ```
+Uses [ollama.hpp](https://github.com/jmont-dev/ollama-hpp) header only library
