@@ -17,7 +17,7 @@ void generate(const std::string &model, const ollama::messages messages,
 class OllamaState : public State {
     public:
     OllamaState(AppDataRef data)
-        : data(data), scrollingOffset(0), streamingCounter(0),
+        : activateScrolling(true), data(data), streamingCounter(0),
           currentMessageLineCounter(2) {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
@@ -61,9 +61,11 @@ class OllamaState : public State {
     void draw(float dt) override;
 
     private:
-    AppDataRef data;
+    void handleScrolling(const sf::Event &event);
 
-    // sf::View chatView;
+    bool activateScrolling; // For scrolling up and down the chatbox
+
+    AppDataRef data;
 
     std::string promptInput;
     std::string temp;
@@ -73,8 +75,6 @@ class OllamaState : public State {
     sf::IntRect inputBoxArea;              // For easy input detection
 
     ChatBox chatBox;
-    int scrollingOffset; // To scroll the chatbox and go back to the bottom
-                         // after
 
     MessageBox userMessageBox; // Temporary message box for user
     MessageBox llmMessageBox;  // Temporary message box for response

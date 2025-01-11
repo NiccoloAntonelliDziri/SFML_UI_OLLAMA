@@ -39,11 +39,12 @@ void MultilineText::write(const std::string &text) {
         }
         if (c != '\n') {
             // never begin a line with a space
-            if (charCounter == 0 && c == ' ') {
+            // On supprime que le premier espace et on garde les autres
+            charCounter++;
+            if (charCounter == 1 && c == ' ') {
                 continue;
             }
             line += c;
-            charCounter++;
         }
     }
     // Add the last line
@@ -167,11 +168,12 @@ void ScrollTextInPlace::write(const std::string &text) {
         }
         if (c != '\n') {
             // never begin a line with a space
-            if (charCounter == 0 && c == ' ') {
+            // On supprime que le premier espace et on garde les autres
+            charCounter++;
+            if (charCounter == 1 && c == ' ') {
                 continue;
             }
             line += c;
-            charCounter++;
         }
     }
     // Add the last line
@@ -308,11 +310,12 @@ void MessageBox::write(const std::string &text) {
         }
         if (c != '\n') {
             // never begin a line with a space
-            if (charCounter == 0 && c == ' ') {
+            // On supprime que le premier espace et on garde les autres
+            charCounter++;
+            if (charCounter == 1 && c == ' ') {
                 continue;
             }
             line += c;
-            charCounter++;
         }
     }
     // Add the last line
@@ -365,9 +368,17 @@ void ChatBox::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     // no texture
     states.texture = nullptr;
 
-    // Draw all the messages
-    for (auto i = this->begin(); i != this->end(); i++) {
-        target.draw(*i, states);
+    // int linesCounter = 0;
+    // // Draw all the messages
+    // for (auto i = this->begin(); i != this->end(); i++) {
+    //     for (auto line : i->lines) {
+    //         linesCounter++;
+    //         target.draw(line, states);
+    //     }e
+    // }
+
+    for (auto line : this->lines) {
+        target.draw(line, states);
     }
 }
 void ChatBox::scrollUp(int begin, int end) {
@@ -396,4 +407,55 @@ void ChatBox::addMessage(const MessageBox &message) {
         this->scrollUp();
     }
     this->push_back(message);
+    this->updateLinesToDraw();
+}
+void ChatBox::updateTotalNumberLines() {
+    this->totalNumberLines = 0;
+    for (auto i = this->begin(); i != this->end(); i++) {
+        this->totalNumberLines += i->getNumberLines();
+    }
+}
+void ChatBox::updateLinesToDraw() {
+    this->updateTotalNumberLines();
+    int startBeforeOffset =
+        std::max(0, (int)this->getTotalNumberLines() - this->maxLinesToDisplay);
+    int start = std::max(0, (int)this->getTotalNumberLines() -
+                                this->maxLinesToDisplay + this->offset);
+    int end =
+        std::min((int)this->getTotalNumberLines(),
+                 startBeforeOffset + this->maxLinesToDisplay + this->offset);
+
+    this->lines.clear();
+    int counter = 0;
+    for (auto i = this->begin(); i != this->end(); i++) {
+        for (auto line : i->lines) {
+            if (counter >= start && counter < end) {
+                this->lines.push_back(line);
+            }
+            counter++;
+        }
+    }
+}
+void ChatBox::scrollUpMsg() {
+    std::cout << "UP: " << this->offset << std::endl;
+    if (this->offset >= 0) {
+        return;
+    }
+    for (auto i = this->begin(); i != this->end(); i++) {
+        i->scrollUp();
+    }
+    this->offset++;
+    this->updateLinesToDraw();
+}
+
+void ChatBox::scrollDownMsg() {
+    std::cout << "DOWN: " << this->offset << std::endl;
+    if (this->offset <= -this->totalNumberLines + this->maxLinesToDisplay) {
+        return;
+    }
+    for (auto i = this->begin(); i != this->end(); i++) {
+        i->scrollDown();
+    }
+    this->offset--;
+    this->updateLinesToDraw();
 }

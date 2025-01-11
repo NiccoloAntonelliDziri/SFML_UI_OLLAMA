@@ -153,14 +153,29 @@ class ChatBox : public std::vector<MessageBox>,
                 public sf::Drawable,
                 public sf::Transformable {
     public:
-    ChatBox() : std::vector<MessageBox>(), totalNumberLines(0) {}
+    ChatBox() : std::vector<MessageBox>(), totalNumberLines(0), offset(0) {
+        this->maxLinesToDisplay = cst.get<int>("maxNumberLinesChatToDisplay");
+    }
     ~ChatBox() = default;
 
     // parameter: the range of messages to scroll
     void scrollUp(int begin = 0, int end = -1);
     void scrollDown(int begin = 0, int end = -1);
 
+    // For reading the past messages
+    // scrollUpMsg and scrollDownMsg are not the same as scrollUp and scrollDown
+
+    void scrollUpMsg();
+    void scrollDownMsg();
+
+    void updateTotalNumberLines();
+
+    // might not be accurate if the ChatBox is not up to date.
+    // aka messages have been modified after begin added.
+    // Call `calculateTotalNumberLines` to update the total number of lines.
     inline int getTotalNumberLines() const { return this->totalNumberLines; }
+
+    void updateLinesToDraw();
 
     // Add a message to the ChatBox.
     // Use this function instead of push_back.
@@ -170,4 +185,11 @@ class ChatBox : public std::vector<MessageBox>,
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
     int totalNumberLines;
+    int startl;
+    int endl;
+    std::vector<sf::Text> lines;
+
+    int maxLinesToDisplay;
+
+    int offset;
 };

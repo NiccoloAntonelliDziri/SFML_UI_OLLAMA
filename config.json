@@ -58,7 +58,7 @@
         "x": 72,
         "y": 500
     },
-    "maxNumberLinesChatToDisplay": 10,
+    "maxNumberLinesChatToDisplay": 22,
     "inputDefaultText": "Send message.",
     "modelLLMname": "granite3-moe"
 }

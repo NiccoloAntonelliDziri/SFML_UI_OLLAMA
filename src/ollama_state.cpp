@@ -44,84 +44,14 @@ void OllamaState::handleInput() {
         if (this->data->input.isWindowClosed(event)) {
             this->data->window.close();
         }
-        // InputBox is clicked enter input mode
+        // InputBox is empty
         if (this->inputBox.getText() == "") {
             // Set transparency once again
             this->inputBox.setColor(cst.get<sf::Color>("textColorNotActive"));
             this->inputBox.write(cst["inputDefaultText"]);
         }
 
-        // If mouse is in inputBox
-        if (event.type == sf::Event::KeyPressed) {
-            std::cout << "Scrolling offset: " << this->scrollingOffset
-                      << std::endl;
-            std::cout << "maxNumberLinesChatToDisplay: "
-                      << cst.get<int>("maxNumberLinesChatToDisplay")
-                      << std::endl;
-            int maxLines = cst.get<int>("maxNumberLinesChatToDisplay");
-
-            if (event.key.code == sf::Keyboard::Up) {
-
-                if (this->data->input.isMouseInArea(this->inputBoxArea,
-                                                    this->data->window)) {
-                    this->inputBox.scrollUp();
-                } else {
-                    this->inputBox.setColor(
-                        cst.get<sf::Color>("textColorNotActive"));
-                    if (this->scrollingOffset >= 0 &&
-                        this->scrollingOffset<
-                            maxLines &&this->chatBox.getTotalNumberLines()>
-                            maxLines) {
-
-                        this->chatBox.scrollUp();
-                        this->scrollingOffset++;
-                    }
-                }
-            } else if (event.key.code == sf::Keyboard::Down) {
-                if (this->data->input.isMouseInArea(this->inputBoxArea,
-                                                    this->data->window)) {
-                    this->inputBox.scrollDown();
-                } else {
-                    this->inputBox.setColor(
-                        cst.get<sf::Color>("textColorNotActive"));
-                    if (this->scrollingOffset > 0 &&
-                        this->scrollingOffset <=
-                            cst.get<int>("maxNumberLinesChatToDisplay")) {
-                        this->chatBox.scrollDown();
-                        this->scrollingOffset--;
-                    }
-                    // this->chatBox.scrollDown();
-                }
-            }
-        }
-        // Mouse wheel scrolling
-        if (event.type == sf::Event::MouseWheelScrolled) {
-            if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-                if (this->data->input.isMouseInArea(this->inputBoxArea,
-                                                    this->data->window)) {
-                    this->inputBox.setColor(
-                        cst.get<sf::Color>("textColorNotActive"));
-                    if (event.mouseWheelScroll.delta > 0) {
-                        this->inputBox.scrollUp();
-                    } else {
-                        this->inputBox.scrollDown();
-                    }
-                } else {
-                    if (event.mouseWheelScroll.delta > 0) {
-                        if (this->scrollingOffset > 0) {
-                            this->chatBox.scrollUp();
-                            this->scrollingOffset++;
-                        }
-                    } else {
-                        if (this->scrollingOffset <
-                            cst.get<int>("maxNumberLinesChatToDisplay")) {
-                            this->chatBox.scrollDown();
-                            this->scrollingOffset--;
-                        }
-                    }
-                }
-            }
-        }
+        this->handleScrolling(event);
 
         if (event.type == sf::Event::TextEntered) {
 
@@ -138,21 +68,27 @@ void OllamaState::handleInput() {
 
                 // If thread is ready to start
                 if (this->ollamathread.isReady()) {
+                    // deactivate scrolling
+                    this->activateScrolling = false;
 
                     // CALL OLLAMA RESPONSE
                     llm::currentPrompt = this->promptInput;
-                    std::cout << "PROMPT: " << this->promptInput << std::endl;
+                    // std::cout << "PROMPT: " << this->npromptInput <<
+                    // std::endl;
 
                     this->messages.push_back(
                         ollama::message("user", this->promptInput));
 
-                    this->chatBox.scrollUp();
-                    this->userMessageBox.write(this->promptInput);
+                    // this->chatBox.scrollUp();
+                    // "\n  " avec 2 espaces pour sauter une ligne sinon la
+                    // fonction scippe le saut de ligne additionnel
+                    this->userMessageBox.write(this->promptInput + "\n  ");
                     this->chatBox.addMessage(this->userMessageBox);
-                    this->chatBox.scrollUp();
+                    // this->chatBox.scrollUp();
                     this->llmMessageBox.write("...");
                     this->chatBox.addMessage(this->llmMessageBox);
 
+                    // start thread
                     this->ollamathread.start(generate, cst["modelLLMname"],
                                              this->messages,
                                              on_receive_response);
@@ -166,10 +102,11 @@ void OllamaState::handleInput() {
             } else {
                 this->promptInput = this->inputBox.getText();
             }
-            std::cout << this->promptInput << std::endl;
+            // std::cout << this->promptInput << std::endl;
         }
     }
 }
+
 void OllamaState::draw(float dt) {
     this->data->window.draw(this->inputBox);
     this->data->window.draw(this->inputBoxBackground);
@@ -181,30 +118,90 @@ void OllamaState::update(float dt) {
     if (llm::isStreaming) {
         // affiche seulement quand un nouveau token arrive
         if (this->streamingCounter < llm::streamingCounter) {
-            std::cout << "LLM: " << llm::response.str() << std::endl;
+            // std::cout << "LLM: " << llm::response.str() << std::endl;
             this->streamingCounter++;
-            this->llmMessageBox.write(llm::response.str());
-            this->chatBox.back() = this->llmMessageBox;
-        }
-        if ((int)this->currentMessageLineCounter <
-            this->llmMessageBox.getNumberLines()) {
+            this->llmMessageBox.write(llm::response.str() + "\n  ");
+            if ((int)this->currentMessageLineCounter <
+                this->llmMessageBox.getNumberLines()) {
 
-            this->chatBox.scrollUp(0, this->chatBox.size() - 1);
-            this->currentMessageLineCounter++;
+                this->chatBox.scrollUp(0, this->chatBox.size() - 1);
+                this->currentMessageLineCounter++;
+            }
+            this->chatBox.back() = this->llmMessageBox;
+            this->chatBox.updateLinesToDraw();
         }
     }
     if (llm::done) {
         this->ollamathread.reset();
         this->messages.push_back(
-            ollama::message("assistant", llm::response.str()));
+            ollama::message(cst["modelLLMname"], llm::response.str()));
         llm::response.str("");
         llm::response.clear();
         this->streamingCounter = 0;
         this->currentMessageLineCounter = 2;
         llm::done = false;
+        this->activateScrolling = true;
 
-        for (const auto &message : this->messages) {
-            std::cout << message << std::endl;
+        // for (const auto &message : this->messages) {
+        //     std::cout << message << std::endl;
+        // }
+    }
+}
+void OllamaState::handleScrolling(const sf::Event &event) {
+    // If mouse is in inputBox
+    if (event.type == sf::Event::KeyPressed) {
+        if (event.key.code == sf::Keyboard::Up) {
+
+            if (this->activateScrolling &&
+                !this->data->input.isMouseInArea(this->inputBoxArea,
+                                                 this->data->window)) {
+                this->inputBox.setColor(
+                    cst.get<sf::Color>("textColorNotActive"));
+
+                this->chatBox.scrollUpMsg();
+            } else {
+                this->inputBox.scrollUp();
+            }
+
+        } else if (event.key.code == sf::Keyboard::Down) {
+            if (this->activateScrolling &&
+                !this->data->input.isMouseInArea(this->inputBoxArea,
+                                                 this->data->window)) {
+                this->inputBox.setColor(
+                    cst.get<sf::Color>("textColorNotActive"));
+                this->chatBox.scrollDownMsg();
+            } else {
+                this->inputBox.scrollDown();
+            }
         }
     }
+
+    // Mouse wheel scrolling
+    // if (event.type == sf::Event::MouseWheelScrolled) {
+    //     if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+    //         if (this->data->input.isMouseInArea(this->inputBoxArea,
+    //                                             this->data->window)) {
+    //             this->inputBox.setColor(
+    //                 cst.get<sf::Color>("textColorNotActive"));
+    //             if (event.mouseWheelScroll.delta > 0) {
+    //                 this->inputBox.scrollUp();
+    //             } else {
+    //                 this->inputBox.scrollDown();
+    //             }
+    //         } else {
+    //             if (event.mouseWheelScroll.delta > 0) {
+    //                 if (this->scrollingOffset > 0) {
+    //                     this->chatBox.scrollUp();
+    //                     this->scrollingOffset++;
+    //                 }
+    //             } else {
+    //                 if (this->scrollingOffset <
+    //                     cst.get<int>("maxNumberLinesChatToDisplay")) {
+    //                     this->chatBox.scrollDown();
+    //                     this->scrollingOffset--;
+    //                 }
+    //             }
+    //         }
+    //     }
+    // }
 }
