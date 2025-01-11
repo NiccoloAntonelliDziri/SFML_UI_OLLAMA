@@ -1,6 +1,6 @@
 ## Requirements
 
-- [SFML](https://www.sfml-dev.org/download/)
+- [SFML](https://github.com/SFML/SFML?tab=readme-ov-file#install)
 - [Ollama](https://github.com/ollama/ollama)
 - g++17 compiler
 
