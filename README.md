@@ -9,7 +9,7 @@
 - Pull `granite3-moe` model from Ollama in your terminal using:
   
 ```
-ollama pull granite3-moe
+ollama pull granite3-moe (takes 822MB memory)
 ```
 
 - Create the custom AI model from the modelfile provided:
