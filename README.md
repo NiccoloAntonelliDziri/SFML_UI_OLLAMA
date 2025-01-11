@@ -2,6 +2,7 @@
 
 - [SFML](https://www.sfml-dev.org/download/)
 - [Ollama](https://github.com/ollama/ollama)
+- g++17 compiler
 
 ## Installation
 
