@@ -437,7 +437,6 @@ void ChatBox::updateLinesToDraw() {
     }
 }
 void ChatBox::scrollUpMsg() {
-    std::cout << "UP: " << this->offset << std::endl;
     if (this->offset >= 0) {
         return;
     }
@@ -449,7 +448,6 @@ void ChatBox::scrollUpMsg() {
 }
 
 void ChatBox::scrollDownMsg() {
-    std::cout << "DOWN: " << this->offset << std::endl;
     if (this->offset <= -this->totalNumberLines + this->maxLinesToDisplay) {
         return;
     }

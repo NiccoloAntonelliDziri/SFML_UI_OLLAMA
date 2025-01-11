@@ -39,7 +39,7 @@ class OllamaState : public State {
             cst.get<float>("inputBoxThickness"));
 
         this->userMessageBox =
-            MessageBox(this->data->assets.getFont(cst["fontName"]), "user");
+            MessageBox(this->data->assets.getFont(cst["fontName"]), "User");
         this->userMessageBox.setPosition(
             cst.get<sf::Vector2f>("bottomChatPosition"));
 

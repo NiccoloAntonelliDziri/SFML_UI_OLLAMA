@@ -19,7 +19,7 @@ void on_receive_response(const ollama::response &response) {
         llm::done = true;
         llm::isStreaming = false;
         llm::streamingCounter = 0;
-        std::cout << std::endl;
+        // std::cout << std::endl;
     }
 }
 
@@ -73,11 +73,11 @@ void OllamaState::handleInput() {
 
                     // CALL OLLAMA RESPONSE
                     llm::currentPrompt = this->promptInput;
-                    // std::cout << "PROMPT: " << this->npromptInput <<
+                    // std::cout << "PROMPT: " << this->promptInput <<
                     // std::endl;
 
                     this->messages.push_back(
-                        ollama::message("user", this->promptInput));
+                        ollama::message("User", this->promptInput));
 
                     // this->chatBox.scrollUp();
                     // "\n  " avec 2 espaces pour sauter une ligne sinon la
@@ -177,31 +177,25 @@ void OllamaState::handleScrolling(const sf::Event &event) {
     }
 
     // Mouse wheel scrolling
-    // if (event.type == sf::Event::MouseWheelScrolled) {
-    //     if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
-    //         if (this->data->input.isMouseInArea(this->inputBoxArea,
-    //                                             this->data->window)) {
-    //             this->inputBox.setColor(
-    //                 cst.get<sf::Color>("textColorNotActive"));
-    //             if (event.mouseWheelScroll.delta > 0) {
-    //                 this->inputBox.scrollUp();
-    //             } else {
-    //                 this->inputBox.scrollDown();
-    //             }
-    //         } else {
-    //             if (event.mouseWheelScroll.delta > 0) {
-    //                 if (this->scrollingOffset > 0) {
-    //                     this->chatBox.scrollUp();
-    //                     this->scrollingOffset++;
-    //                 }
-    //             } else {
-    //                 if (this->scrollingOffset <
-    //                     cst.get<int>("maxNumberLinesChatToDisplay")) {
-    //                     this->chatBox.scrollDown();
-    //                     this->scrollingOffset--;
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+    if (event.type == sf::Event::MouseWheelScrolled) {
+        if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel) {
+            if (this->activateScrolling &&
+                !this->data->input.isMouseInArea(this->inputBoxArea,
+                                                 this->data->window)) {
+                if (event.mouseWheelScroll.delta > 0) {
+                    this->chatBox.scrollUpMsg();
+                } else {
+                    this->chatBox.scrollDownMsg();
+                }
+            } else {
+                this->inputBox.setColor(
+                    cst.get<sf::Color>("textColorNotActive"));
+                if (event.mouseWheelScroll.delta > 0) {
+                    this->inputBox.scrollUp();
+                } else {
+                    this->inputBox.scrollDown();
+                }
+            }
+        }
+    }
 }
