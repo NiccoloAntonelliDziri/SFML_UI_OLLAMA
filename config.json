@@ -14,6 +14,14 @@
     "chatButtonPath": "assets/images/chat.png",
     "enterButtonName": "enter",
     "enterButtonPath": "assets/images/enter.png",
+    "chatButtonPosition": {
+        "x": 10,
+        "y": 555
+    },
+    "enterButtonPosition": {
+        "x": 1208,
+        "y": 555
+    },
     "fontName": "ubuntu",
     "fontPath": "assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf",
     "fontSize": 24,
@@ -39,11 +47,11 @@
     },
     "inputBoxThickness": 2,
     "inputBoxTextPosition": {
-        "x": 78,
+        "x": 80,
         "y": 541
     },
     "inputBoxPosition": {
-        "x": 72,
+        "x": 74,
         "y": 541
     },
     "inputBoxSize": {
@@ -51,7 +59,7 @@
         "y": 83
     },
     "bottomChatPosition": {
-        "x": 72,
+        "x": 77,
         "y": 500
     },
     "maxNumberLinesChatToDisplay": 22,

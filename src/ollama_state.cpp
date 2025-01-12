@@ -1,4 +1,5 @@
 #include "ollama_state.hpp"
+#include "chat_selection_state.hpp"
 
 namespace llm {
 inline std::ostringstream response;
@@ -40,6 +41,12 @@ void OllamaState::init() {
     // Create default chat
     this->data->chats.addChat("default");
     this->data->chats.setActiveChat("default");
+
+    // Scale the Buttons
+    this->enterButton.scale(0.1f, 0.1f);
+    this->chatButton.scale(0.1f, 0.1f);
+    this->data->assets.setTextureSmooth(cst["chatButtonName"], true);
+    this->data->assets.setTextureSmooth(cst["enterButtonName"], true);
 }
 
 void OllamaState::handleInput() {
@@ -48,6 +55,17 @@ void OllamaState::handleInput() {
         if (this->data->input.isWindowClosed(event)) {
             this->data->window.close();
         }
+        // Switch to chat selection state
+        if (this->data->input.isSpriteClicked(this->chatButton, sf::Mouse::Left,
+                                              event, this->data->window)) {
+            if (this->ollamathread.isReady()) {
+                this->data->machine.addState(
+                    std::make_unique<ChatSelectionState>(this->data), false);
+            } else {
+                std::cerr << "Thread is not ready to switch state" << std::endl;
+            }
+        }
+
         // InputBox is empty
         if (this->inputBox.getText() == "") {
             // Set transparency once again
@@ -57,19 +75,25 @@ void OllamaState::handleInput() {
 
         this->handleScrolling(event);
 
-        if (event.type == sf::Event::TextEntered) {
-
+        if (event.type == sf::Event::TextEntered ||
+            this->data->input.isSpriteClicked(this->enterButton,
+                                              sf::Mouse::Left, event,
+                                              this->data->window)) {
             this->inputBox.setColor(cst.get<sf::Color>("textColor"));
             if (this->inputBox.getText() == cst["inputDefaultText"]) {
                 this->inputBox.write("");
             }
 
-            this->inputBox.typedOn(event);
+            // Only if it is the text entered event
+            if (event.type == sf::Event::TextEntered)
+                this->inputBox.typedOn(event);
 
             // If Key pressed and prompt is not empty and model is loaded
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) &&
+            if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Return) ||
+                 this->data->input.isSpriteClicked(this->enterButton,
+                                                   sf::Mouse::Left, event,
+                                                   this->data->window)) &&
                 !this->promptInput.empty()) {
-
                 // If thread is ready to start
                 if (this->ollamathread.isReady()) {
                     // deactivate scrolling
@@ -108,9 +132,8 @@ void OllamaState::handleInput() {
                     this->promptInput.clear();
                     this->inputBox.write("");
                 } else {
-                    std::cout << "Thread is not ready" << std::endl;
+                    std::cerr << "Thread is not ready" << std::endl;
                 }
-
             } else {
                 this->promptInput = this->inputBox.getText();
             }
@@ -125,6 +148,10 @@ void OllamaState::draw(float dt) {
     // this->data->window.draw(this->chatBox);
     this->data->window.draw(this->data->chats.getActiveChatBox());
     // this->data->window.draw(this->llmMessageBox);
+
+    // Buttons
+    this->data->window.draw(this->enterButton);
+    this->data->window.draw(this->chatButton);
 }
 
 void OllamaState::update(float dt) {

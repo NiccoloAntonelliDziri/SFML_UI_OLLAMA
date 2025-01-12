@@ -21,6 +21,19 @@ class OllamaState : public State {
           currentMessageLineCounter(2) {
 
         this->inputBox = InputBox(this->data->assets.getFont(cst["fontName"]));
+
+        // Load the textures in the sprite
+        this->chatButton.setTexture(
+            this->data->assets.getTexture(cst["chatButtonName"]));
+        this->enterButton.setTexture(
+            this->data->assets.getTexture(cst["enterButtonName"]));
+
+        // Set the position of the buttons
+        this->chatButton.setPosition(
+            cst.get<sf::Vector2f>("chatButtonPosition"));
+        this->enterButton.setPosition(
+            cst.get<sf::Vector2f>("enterButtonPosition"));
+
         // Couleur noire + transparence + fond blanc = gris
         sf::Color color = cst.get<sf::Color>("textColor");
         color.a = 128;
@@ -82,4 +95,7 @@ class OllamaState : public State {
     unsigned currentMessageLineCounter; // For the current message llmMessageBox
 
     ThreadManager<void> ollamathread;
+
+    sf::Sprite chatButton;
+    sf::Sprite enterButton;
 };
