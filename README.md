@@ -32,3 +32,7 @@ make run
 <a href="https://www.flaticon.com/free-icons/conversation" title="conversation icons">Conversation icons created by Pixel perfect - Flaticon</a>
 
 <a href="https://www.flaticon.com/free-icons/enter" title="enter icons">Enter icons created by mavadee - Flaticon</a>
+
+<a href="https://www.flaticon.com/free-icons/add" title="add icons">Add icons created by reussy - Flaticon</a>
+
+<a href="https://www.flaticon.com/free-icons/delete" title="delete icons">Delete icons created by Ilham Fitrotul Hayat - Flaticon</a>

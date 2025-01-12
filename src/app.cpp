@@ -19,6 +19,10 @@ App::App(int width, int height, std::string title) {
                                    cst["chatButtonPath"]);
     this->data->assets.loadTexture(cst["enterButtonName"],
                                    cst["enterButtonPath"]);
+    this->data->assets.loadTexture(cst["moreButtonName"],
+                                   cst["moreButtonPath"]);
+    this->data->assets.loadTexture(cst["deleteButtonName"],
+                                   cst["deleteButtonPath"]);
 
     // ajoute le premier état à la pile
     this->data->machine.addState(std::make_unique<OllamaState>(this->data));

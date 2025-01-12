@@ -14,6 +14,10 @@
     "chatButtonPath": "assets/images/chat.png",
     "enterButtonName": "enter",
     "enterButtonPath": "assets/images/enter.png",
+    "moreButtonName": "more",
+    "moreButtonPath": "assets/images/more.png",
+    "deleteButtonName": "delete",
+    "deleteButtonPath": "assets/images/delete.png",
     "chatButtonPosition": {
         "x": 10,
         "y": 555
