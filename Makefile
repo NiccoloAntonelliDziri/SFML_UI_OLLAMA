@@ -25,13 +25,6 @@ OBJ_DEBUG := $(addprefix $(DBG_PATH)/, $(addsuffix .o, $(notdir $(basename $(SRC
 TST := $(foreach x, $(TST_PATH), $(wildcard $(addprefix $(x)/*,.c*)))
 OBJ_TEST := $(filter-out $(OBJ_PATH)/main.o, $(OBJ)) $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(TST)))))
 
-# clean files list
-DISTCLEAN_LIST := $(OBJ) \
-                  $(OBJ_DEBUG)
-CLEAN_LIST := $(TARGET) \
-			  $(TARGET_DEBUG) \
-			  $(DISTCLEAN_LIST)
-
 # default rule
 default: makedir all
 
@@ -70,13 +63,8 @@ debug: $(TARGET_DEBUG)
 
 .PHONY: clean
 clean:
-	@echo CLEAN $(CLEAN_LIST)
-	@rm -f $(CLEAN_LIST)
-
-.PHONY: distclean
-distclean:
-	@echo CLEAN $(DISTCLEAN_LIST)
-	@rm -f $(DISTCLEAN_LIST)
+	@echo "Liste des fichiers supprimés:"
+	rm -rf $(BIN_PATH) $(OBJ_PATH) $(DBG_PATH)
 
 .PHONY: run
 run: default
