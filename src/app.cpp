@@ -15,6 +15,11 @@ App::App(int width, int height, std::string title) {
     // différents états.
     this->data->assets.loadFont(cst["fontName"], cst["fontPath"]);
 
+    this->data->assets.loadTexture(cst["chatButtonName"],
+                                   cst["chatButtonPath"]);
+    this->data->assets.loadTexture(cst["enterButtonName"],
+                                   cst["enterButtonPath"]);
+
     // ajoute le premier état à la pile
     this->data->machine.addState(std::make_unique<OllamaState>(this->data));
 

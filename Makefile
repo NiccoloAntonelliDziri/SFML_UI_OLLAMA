@@ -63,7 +63,7 @@ debug: $(TARGET_DEBUG)
 
 .PHONY: clean
 clean:
-	@echo "Liste des fichiers supprimés:"
+	@echo "Le gros ménage"
 	rm -rf $(BIN_PATH) $(OBJ_PATH) $(DBG_PATH)
 
 .PHONY: run

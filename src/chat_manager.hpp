@@ -9,13 +9,20 @@ class ChatManager {
     ChatManager() = default;
     ~ChatManager() = default;
 
-    void createChat(const std::string name);
+    void addChat(const std::string name);
     void deleteChat(const std::string name);
 
-    ChatBox &getChatBox(const std::string name);
-    ollama::messages &getMessages(const std::string name);
+    ChatBox &getActiveChatBox();
+    ollama::messages &getActiveMessages();
+
+    void setActiveChat(const std::string name);
+    inline std::string getActiveChatName() { return this->activeChat; }
+
+    bool chatExists(const std::string name);
 
     private:
     std::map<std::string, ChatBox> chats;
     std::map<std::string, ollama::messages> messages;
+
+    std::string activeChat;
 };

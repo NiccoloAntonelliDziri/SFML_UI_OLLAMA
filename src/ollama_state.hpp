@@ -48,8 +48,6 @@ class OllamaState : public State {
         this->llmMessageBox.setPosition(
             cst.get<sf::Vector2f>("bottomChatPosition"));
 
-        // this->chatBox.setPosition(cst.get<sf::Vector2f>("bottomChatPosition"));
-
         ollama::show_requests(true);
         ollama::show_replies(true);
     }
@@ -74,7 +72,8 @@ class OllamaState : public State {
     sf::RectangleShape inputBoxBackground; // Rectangle autour du texte input
     sf::IntRect inputBoxArea;              // For easy input detection
 
-    ChatBox chatBox;
+    // ChatBox chatBox;
+    // ollama::messages messages;
 
     MessageBox userMessageBox; // Temporary message box for user
     MessageBox llmMessageBox;  // Temporary message box for response
@@ -83,6 +82,4 @@ class OllamaState : public State {
     unsigned currentMessageLineCounter; // For the current message llmMessageBox
 
     ThreadManager<void> ollamathread;
-
-    ollama::messages messages;
 };

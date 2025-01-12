@@ -36,6 +36,10 @@ void OllamaState::init() {
         static_cast<int>(this->inputBoxBackground.getPosition().y),
         static_cast<int>(this->inputBoxBackground.getSize().x),
         static_cast<int>(this->inputBoxBackground.getSize().y)};
+
+    // Create default chat
+    this->data->chats.addChat("default");
+    this->data->chats.setActiveChat("default");
 }
 
 void OllamaState::handleInput() {
@@ -76,22 +80,30 @@ void OllamaState::handleInput() {
                     // std::cout << "PROMPT: " << this->promptInput <<
                     // std::endl;
 
-                    this->messages.push_back(
+                    // this->messages.push_back(
+                    //     ollama::message("User", this->promptInput));
+                    this->data->chats.getActiveMessages().push_back(
                         ollama::message("User", this->promptInput));
 
                     // this->chatBox.scrollUp();
                     // "\n  " avec 2 espaces pour sauter une ligne sinon la
                     // fonction scippe le saut de ligne additionnel
                     this->userMessageBox.write(this->promptInput + "\n  ");
-                    this->chatBox.addMessage(this->userMessageBox);
+                    // this->chatBox.addMessage(this->userMessageBox);
+                    this->data->chats.getActiveChatBox().addMessage(
+                        this->userMessageBox);
                     // this->chatBox.scrollUp();
                     this->llmMessageBox.write("...");
-                    this->chatBox.addMessage(this->llmMessageBox);
+                    // this->chatBox.addMessage(this->llmMessageBox);
+                    this->data->chats.getActiveChatBox().addMessage(
+                        this->llmMessageBox);
 
                     // start thread
-                    this->ollamathread.start(generate, cst["modelLLMname"],
-                                             this->messages,
-                                             on_receive_response);
+                    this->ollamathread.start(
+                        generate, cst["modelLLMname"],
+                        // this->messages,
+                        this->data->chats.getActiveMessages(),
+                        on_receive_response);
 
                     this->promptInput.clear();
                     this->inputBox.write("");
@@ -110,7 +122,8 @@ void OllamaState::handleInput() {
 void OllamaState::draw(float dt) {
     this->data->window.draw(this->inputBox);
     this->data->window.draw(this->inputBoxBackground);
-    this->data->window.draw(this->chatBox);
+    // this->data->window.draw(this->chatBox);
+    this->data->window.draw(this->data->chats.getActiveChatBox());
     // this->data->window.draw(this->llmMessageBox);
 }
 
@@ -124,16 +137,22 @@ void OllamaState::update(float dt) {
             if ((int)this->currentMessageLineCounter <
                 this->llmMessageBox.getNumberLines()) {
 
-                this->chatBox.scrollUp(0, this->chatBox.size() - 1);
+                // this->chatBox.scrollUp(0, this->chatBox.size() - 1);
+                this->data->chats.getActiveChatBox().scrollUp(
+                    0, this->data->chats.getActiveChatBox().size() - 1);
                 this->currentMessageLineCounter++;
             }
-            this->chatBox.back() = this->llmMessageBox;
-            this->chatBox.updateLinesToDraw();
+            // this->chatBox.back() = this->llmMessageBox;
+            // this->chatBox.updateLinesToDraw();
+            this->data->chats.getActiveChatBox().back() = this->llmMessageBox;
+            this->data->chats.getActiveChatBox().updateLinesToDraw();
         }
     }
     if (llm::done) {
         this->ollamathread.reset();
-        this->messages.push_back(
+        // this->messages.push_back(
+        //     ollama::message(cst["modelLLMname"], llm::response.str()));
+        this->data->chats.getActiveMessages().push_back(
             ollama::message(cst["modelLLMname"], llm::response.str()));
         llm::response.str("");
         llm::response.clear();
@@ -158,7 +177,8 @@ void OllamaState::handleScrolling(const sf::Event &event) {
                 this->inputBox.setColor(
                     cst.get<sf::Color>("textColorNotActive"));
 
-                this->chatBox.scrollUpMsg();
+                // this->chatBox.scrollUpMsg();
+                this->data->chats.getActiveChatBox().scrollUpMsg();
             } else {
                 this->inputBox.scrollUp();
             }
@@ -169,7 +189,8 @@ void OllamaState::handleScrolling(const sf::Event &event) {
                                                  this->data->window)) {
                 this->inputBox.setColor(
                     cst.get<sf::Color>("textColorNotActive"));
-                this->chatBox.scrollDownMsg();
+                // this->chatBox.scrollDownMsg();
+                this->data->chats.getActiveChatBox().scrollDownMsg();
             } else {
                 this->inputBox.scrollDown();
             }
@@ -183,9 +204,11 @@ void OllamaState::handleScrolling(const sf::Event &event) {
                 !this->data->input.isMouseInArea(this->inputBoxArea,
                                                  this->data->window)) {
                 if (event.mouseWheelScroll.delta > 0) {
-                    this->chatBox.scrollUpMsg();
+                    // this->chatBox.scrollUpMsg();
+                    this->data->chats.getActiveChatBox().scrollUpMsg();
                 } else {
-                    this->chatBox.scrollDownMsg();
+                    // this->chatBox.scrollDownMsg();
+                    this->data->chats.getActiveChatBox().scrollDownMsg();
                 }
             } else {
                 this->inputBox.setColor(
