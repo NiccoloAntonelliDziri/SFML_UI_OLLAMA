@@ -26,4 +26,9 @@ make run
 ## Credits
 
 - [ollama.hpp](https://github.com/jmont-dev/ollama-hpp) header only library
+
+- Icons:
+  
 <a href="https://www.flaticon.com/free-icons/conversation" title="conversation icons">Conversation icons created by Pixel perfect - Flaticon</a>
+
+<a href="https://www.flaticon.com/free-icons/enter" title="enter icons">Enter icons created by mavadee - Flaticon</a>
