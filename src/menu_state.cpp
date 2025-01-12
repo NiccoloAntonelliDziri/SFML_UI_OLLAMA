@@ -1,9 +1,9 @@
-#include "settings_state.hpp"
+#include "menu_state.hpp"
 
 #include "asset_manager.hpp"
 
-void SettingsState::init() {}
-void SettingsState::handleInput() {
+void MenuState::init() {}
+void MenuState::handleInput() {
     sf::Event event;
     while (this->data->window.pollEvent(event)) {
         if (this->data->input.isWindowClosed(event)) {
@@ -11,5 +11,5 @@ void SettingsState::handleInput() {
         }
     }
 }
-void SettingsState::update(float dt) {}
-void SettingsState::draw(float dt) {}
+void MenuState::update(float dt) {}
+void MenuState::draw(float dt) {}

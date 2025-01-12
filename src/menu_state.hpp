@@ -3,10 +3,10 @@
 #include "app.hpp"
 #include "state.hpp"
 
-class SettingsState : public State {
+class MenuState : public State {
     public:
-    SettingsState(AppDataRef data) : data(data) {}
-    ~SettingsState() = default;
+    MenuState(AppDataRef data) : data(data) {}
+    ~MenuState() = default;
 
     void init() override;
     void handleInput() override;

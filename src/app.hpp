@@ -1,6 +1,7 @@
 #pragma once
 
 #include "asset_manager.hpp"
+#include "chat_manager.hpp"
 #include "constants.hpp"
 #include "input_manager.hpp"
 #include "music_manager.hpp"
@@ -15,6 +16,7 @@ struct AppData {
     InputManager input;
     AssetManager assets;
     MusicManager music;
+    ChatManager chats;
 };
 
 using AppDataRef = std::shared_ptr<AppData>; // pointeur vers structure

@@ -22,4 +22,8 @@ ollama create Cecile -f modelfile
 ```
 make run
 ```
-Uses [ollama.hpp](https://github.com/jmont-dev/ollama-hpp) header only library
+
+## Credits
+
+- [ollama.hpp](https://github.com/jmont-dev/ollama-hpp) header only library
+<a href="https://www.flaticon.com/free-icons/conversation" title="conversation icons">Conversation icons created by Pixel perfect - Flaticon</a>
