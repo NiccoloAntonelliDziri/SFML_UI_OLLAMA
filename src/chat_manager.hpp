@@ -17,6 +17,7 @@ class ChatManager {
 
     void setActiveChat(const std::string name);
     inline std::string getActiveChatName() { return this->activeChat; }
+    inline int getNumberOfChats() { return this->chats.size(); }
 
     bool chatExists(const std::string name);
 

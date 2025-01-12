@@ -39,8 +39,8 @@ void OllamaState::init() {
         static_cast<int>(this->inputBoxBackground.getSize().y)};
 
     // Create default chat
-    this->data->chats.addChat("default");
-    this->data->chats.setActiveChat("default");
+    this->data->chats.addChat("Default");
+    this->data->chats.setActiveChat("Default");
 
     // Scale the Buttons
     this->enterButton.scale(0.1f, 0.1f);

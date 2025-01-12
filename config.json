@@ -26,11 +26,16 @@
         "x": 1208,
         "y": 555
     },
+    "conversationTopLeft": {
+        "x": 100,
+        "y": 20
+    },
     "fontName": "ubuntu",
     "fontPath": "assets/fonts/Ubuntu_Mono/UbuntuMono-Regular.ttf",
     "fontSize": 24,
     "maxNumberCharacterLimit": 93,
     "maxNumberLinesInputBox": 3,
+    "maxNumberCharacterConversationInput": 31,
     "inputBoxOutlineColor": {
         "r": 0,
         "g": 0,
@@ -61,6 +66,10 @@
     "inputBoxSize": {
         "x": 1131,
         "y": 83
+    },
+    "conversationBoxSize": {
+        "x": 1020,
+        "y": 62
     },
     "bottomChatPosition": {
         "x": 77,
