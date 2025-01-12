@@ -73,4 +73,5 @@ class Constants {
 
 // Global Constants object
 // C++ 17 inline variables
+
 inline const Constants cst("config.json");

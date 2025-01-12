@@ -1,7 +1,7 @@
 # tool macros
 CC := g++
 CFLAGS := -std=c++17 -Wall -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -Iollama-hpp/singleheader
-DBGFLAGS := -g -ggdb3
+DBGFLAGS := -g
 COBJFLAGS := $(CFLAGS) -c
 
 # path macros
@@ -9,16 +9,21 @@ BIN_PATH := bin
 OBJ_PATH := obj
 SRC_PATH := src
 DBG_PATH := debug
+TST_PATH := tests
 
 # compile macros
 TARGET_NAME := incroyable
 TARGET := $(BIN_PATH)/$(TARGET_NAME)
 TARGET_DEBUG := $(DBG_PATH)/$(TARGET_NAME)
+TARGET_TEST := $(DBG_PATH)/tests
 
 # src files & obj files
 SRC := $(foreach x, $(SRC_PATH), $(wildcard $(addprefix $(x)/*,.c*)))
 OBJ := $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(SRC)))))
 OBJ_DEBUG := $(addprefix $(DBG_PATH)/, $(addsuffix .o, $(notdir $(basename $(SRC)))))
+# test files
+TST := $(foreach x, $(TST_PATH), $(wildcard $(addprefix $(x)/*,.c*)))
+OBJ_TEST := $(filter-out $(OBJ_PATH)/main.o, $(OBJ)) $(addprefix $(OBJ_PATH)/, $(addsuffix .o, $(notdir $(basename $(TST)))))
 
 # clean files list
 DISTCLEAN_LIST := $(OBJ) \
@@ -30,6 +35,9 @@ CLEAN_LIST := $(TARGET) \
 # default rule
 default: makedir all
 
+$(TARGET_TEST): makedir $(OBJ_TEST)
+	$(CC) -o $@ $(OBJ_TEST) $(CFLAGS)
+
 # non-phony targets
 $(TARGET): $(OBJ)
 	$(CC) -o $@ $(OBJ) $(CFLAGS)
@@ -39,6 +47,9 @@ $(OBJ_PATH)/%.o: $(SRC_PATH)/%.c*
 
 $(DBG_PATH)/%.o: $(SRC_PATH)/%.c*
 	$(CC) $(COBJFLAGS) $(DBGFLAGS) -o $@ $<
+
+$(OBJ_PATH)/%.o: $(TST_PATH)/%.c*
+	$(CC) $(COBJFLAGS) -o $@ $<
 
 $(TARGET_DEBUG): $(OBJ_DEBUG)
 	$(CC) $(CFLAGS) $(DBGFLAGS) $(OBJ_DEBUG) -o $@
@@ -50,6 +61,9 @@ makedir:
 
 .PHONY: all
 all: $(TARGET)
+
+.PHONY: test
+test: $(TARGET_TEST)
 
 .PHONY: debug
 debug: $(TARGET_DEBUG)
@@ -67,6 +81,10 @@ distclean:
 .PHONY: run
 run: default
 	./$(TARGET)
+
+.PHONY: testrun
+testrun: test
+	./$(TARGET_TEST)
 
 .PHONY: uml
 uml:
