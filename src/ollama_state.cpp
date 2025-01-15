@@ -38,10 +38,6 @@ void OllamaState::init() {
         static_cast<int>(this->inputBoxBackground.getSize().x),
         static_cast<int>(this->inputBoxBackground.getSize().y)};
 
-    // Create default chat
-    this->data->chats.addChat("Default");
-    this->data->chats.setActiveChat("Default");
-
     // Scale the Buttons
     this->enterButton.scale(0.1f, 0.1f);
     this->chatButton.scale(0.1f, 0.1f);
@@ -50,6 +46,7 @@ void OllamaState::init() {
 }
 
 void OllamaState::handleInput() {
+    this->llmMessageBox.setRole(this->data->chats.getActiveChatName());
     sf::Event event;
     while (this->data->window.pollEvent(event)) {
         if (this->data->input.isWindowClosed(event)) {
@@ -118,14 +115,12 @@ void OllamaState::handleInput() {
                         this->userMessageBox);
                     // this->chatBox.scrollUp();
                     this->llmMessageBox.write("...");
-                    // this->chatBox.addMessage(this->llmMessageBox);
+
                     this->data->chats.getActiveChatBox().addMessage(
                         this->llmMessageBox);
 
-                    // start thread
                     this->ollamathread.start(
-                        generate, cst["modelLLMname"],
-                        // this->messages,
+                        generate, this->data->chats.getActiveChatName(),
                         this->data->chats.getActiveMessages(),
                         on_receive_response);
 
@@ -179,8 +174,8 @@ void OllamaState::update(float dt) {
         this->ollamathread.reset();
         // this->messages.push_back(
         //     ollama::message(cst["modelLLMname"], llm::response.str()));
-        this->data->chats.getActiveMessages().push_back(
-            ollama::message(cst["modelLLMname"], llm::response.str()));
+        this->data->chats.getActiveMessages().push_back(ollama::message(
+            this->data->chats.getActiveChatName(), llm::response.str()));
         llm::response.str("");
         llm::response.clear();
         this->streamingCounter = 0;

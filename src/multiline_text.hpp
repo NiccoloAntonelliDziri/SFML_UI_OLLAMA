@@ -137,6 +137,9 @@ class MessageBox : public MultilineText {
 
     void write(const std::string &text);
 
+    inline std::string getRole() const { return this->role; }
+    inline void setRole(const std::string &role) { this->role = role; }
+
     // not the same scrollUp as in ScrollTextInPlace
     void scrollUp();
     // not the same scrollDown as in ScrollTextInPlace

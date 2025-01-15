@@ -51,13 +51,18 @@ class OllamaState : public State {
         this->inputBoxBackground.setOutlineThickness(
             cst.get<float>("inputBoxThickness"));
 
+        // Create default chat
+        this->data->chats.addChat("Cecile");
+        this->data->chats.setActiveChat("Cecile");
+
         this->userMessageBox =
             MessageBox(this->data->assets.getFont(cst["fontName"]), "User");
         this->userMessageBox.setPosition(
             cst.get<sf::Vector2f>("bottomChatPosition"));
 
-        this->llmMessageBox = MessageBox(
-            this->data->assets.getFont(cst["fontName"]), cst["modelLLMname"]);
+        this->llmMessageBox =
+            MessageBox(this->data->assets.getFont(cst["fontName"]),
+                       this->data->chats.getActiveChatName());
         this->llmMessageBox.setPosition(
             cst.get<sf::Vector2f>("bottomChatPosition"));
 

@@ -2,11 +2,11 @@
 
 void ChatSelectionState::init() {
     // Default est crée avant dans le state ollama
-    this->newChat("Default");
+    this->newChat("Cecile");
 
-    if (!this->data->chats.chatExists("Chat"))
-        this->data->chats.addChat("Chat");
-    this->newChat("Chat");
+    if (!this->data->chats.chatExists("Mario"))
+        this->data->chats.addChat("Mario");
+    this->newChat("Mario");
 
     if (!this->data->chats.chatExists("Chat2"))
         this->data->chats.addChat("Chat2");
@@ -77,6 +77,8 @@ void ChatSelectionState::handleInput() {
                 for (auto &chat : this->data->chats.getChats()) {
                     std::cout << chat.first << std::endl;
                 }
+
+                this->data->window.setTitle(block.first);
             }
         }
 

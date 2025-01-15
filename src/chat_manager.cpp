@@ -8,10 +8,10 @@ void ChatManager::deleteChat(const std::string name) {
     if (this->chatExists(name)) {
         this->chats[name] = ChatBox();
         this->messages[name] = ollama::messages();
-    } else {
-        std::cerr << "Chat: " << name << " does not exist" << std::endl;
-        exit(1);
+        return;
     }
+    std::cerr << "Chat: " << name << " does not exist" << std::endl;
+    exit(1);
 }
 ChatBox &ChatManager::getActiveChatBox() {
     if (this->chatExists(this->activeChat)) {

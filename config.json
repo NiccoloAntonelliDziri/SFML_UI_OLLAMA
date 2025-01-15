@@ -76,6 +76,5 @@
         "y": 500
     },
     "maxNumberLinesChatToDisplay": 22,
-    "inputDefaultText": "Send message.",
-    "modelLLMname": "Cecile"
+    "inputDefaultText": "Send message."
 }
