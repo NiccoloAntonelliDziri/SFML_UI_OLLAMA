@@ -4,3 +4,4 @@
 -lsfml-system
 -lsfml-audio
 -c
+-std=c++20

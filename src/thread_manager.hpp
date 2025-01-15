@@ -1,7 +1,6 @@
 #pragma once
 
 #include <future>
-#include <iostream>
 #include <thread>
 
 template <typename ResultType>

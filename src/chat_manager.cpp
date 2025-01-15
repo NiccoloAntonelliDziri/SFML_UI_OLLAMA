@@ -1,18 +1,17 @@
 #include "chat_manager.hpp"
 
 bool ChatManager::chatExists(const std::string name) {
-    return this->chats.find(name) != this->chats.end() &&
-           this->messages.find(name) != this->messages.end();
+    return this->chats.contains(name);
 }
 
 void ChatManager::deleteChat(const std::string name) {
     if (this->chatExists(name)) {
-        this->chats.erase(name);
-        this->messages.erase(name);
+        this->chats[name] = ChatBox();
+        this->messages[name] = ollama::messages();
+    } else {
+        std::cerr << "Chat: " << name << " does not exist" << std::endl;
+        exit(1);
     }
-    std::cerr << "Chat: " << name << " does not exist and cannot be deleted"
-              << std::endl;
-    exit(1);
 }
 ChatBox &ChatManager::getActiveChatBox() {
     if (this->chatExists(this->activeChat)) {
@@ -44,4 +43,11 @@ void ChatManager::addChat(const std::string name) {
     }
     std::cerr << "Chat: " << name << " already exists" << std::endl;
     exit(1);
+}
+std::vector<std::string> ChatManager::getChatNames() {
+    std::vector<std::string> names;
+    for (auto &chat : this->chats) {
+        names.push_back(chat.first);
+    }
+    return names;
 }

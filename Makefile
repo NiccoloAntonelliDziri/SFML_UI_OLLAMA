@@ -1,6 +1,6 @@
 # tool macros
 CC := g++
-CFLAGS := -std=c++17 -Wall -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -Iollama-hpp/singleheader
+CFLAGS := -std=c++20 -Wall -lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio -Iollama-hpp/singleheader
 DBGFLAGS := -g
 COBJFLAGS := $(CFLAGS) -c
 

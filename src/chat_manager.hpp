@@ -19,6 +19,13 @@ class ChatManager {
     inline std::string getActiveChatName() { return this->activeChat; }
     inline int getNumberOfChats() { return this->chats.size(); }
 
+    inline std::map<std::string, ChatBox> &getChats() { return this->chats; }
+    inline std::map<std::string, ollama::messages> &getMessages() {
+        return this->messages;
+    }
+
+    std::vector<std::string> getChatNames();
+
     bool chatExists(const std::string name);
 
     private:

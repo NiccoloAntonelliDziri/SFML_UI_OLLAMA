@@ -83,78 +83,6 @@ class C_0015731897903105408204 {
 __
 -j : json
 }
-class "InputManager" as C_0011218267209626974551
-class C_0011218267209626974551 {
-+InputManager() = default : void
-+~InputManager() = default : void
-..
-+getMousePosition(sf::RenderWindow & window) const : sf::Vector2i
-+isMouseClickedInArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
-+isMouseClickedOutsideArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
-+isMouseInArea(sf::IntRect area, sf::RenderWindow & window) : bool
-+isSpriteClicked(sf::Sprite sprite, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
-+isWindowClosed(sf::Event & event) : bool
-__
--lockMouseClicked : bool
-}
-enum "MusicStatus" as C_0008159535231821289035
-enum C_0008159535231821289035 {
-Stopped
-Paused
-Playing
-NotExisting
-}
-class "MusicManager" as C_0013018981818162392349
-class C_0013018981818162392349 {
-+MusicManager() : void
-+~MusicManager() = default : void
-..
-+enableLoop(bool enable) : void
-+isMuted() : bool
-+isPlaying() const : bool
-+mute() : void
-+openMusic(std::string filepath) : void
-+play() : void
-+setVolume(float volume) : void
-+unMute() : void
-__
--isMusicMuted : bool
--music : sf::Music
--status : MusicStatus
--volume : float
-}
-class "AppData" as C_0002878685250157375085
-class C_0002878685250157375085 {
-__
-+assets : AssetManager
-+input : InputManager
-+machine : StateMachine
-+music : MusicManager
-+window : sf::RenderWindow
-}
-class "App" as C_0018282610363821501524
-class C_0018282610363821501524 {
-+App(int width, int height, std::string title) : void
-+~App() : void
-..
--run() : void
-__
--clock : sf::Clock
--data : AppDataRef
--dt : const float
-}
-class "SettingsState" as C_0007275061059561579929
-class C_0007275061059561579929 {
-+SettingsState(AppDataRef data) : void
-+~SettingsState() = default : void
-..
-+draw(float dt) : void
-+handleInput() : void
-+init() : void
-+update(float dt) : void
-__
--data : AppDataRef
-}
 class "MultilineText" as C_0006075958540417117804
 class C_0006075958540417117804 {
 +MultilineText() = default : void
@@ -249,6 +177,88 @@ __
 -startl : int
 -totalNumberLines : int
 }
+class "ChatManager" as C_0014275120282245944757
+class C_0014275120282245944757 {
++ChatManager() = default : void
++~ChatManager() = default : void
+..
++addChat(const std::string name) : void
++chatExists(const std::string name) : bool
++deleteChat(const std::string name) : void
++getActiveChatBox() : ChatBox &
++getActiveChatName() : std::string
++getActiveMessages() : ollama::messages &
++getChatNames() : std::vector<std::string>
++getChats() : std::map<std::string,ChatBox> &
++getMessages() : std::map<std::string,ollama::messages> &
++getNumberOfChats() : int
++setActiveChat(const std::string name) : void
+__
+-activeChat : std::string
+-chats : std::map<std::string,ChatBox>
+-messages : std::map<std::string,ollama::messages>
+}
+class "InputManager" as C_0011218267209626974551
+class C_0011218267209626974551 {
++InputManager() = default : void
++~InputManager() constexpr = default : void
+..
++getMousePosition(sf::RenderWindow & window) const : sf::Vector2i
++isMouseClickedInArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
++isMouseClickedOutsideArea(sf::IntRect area, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
++isMouseInArea(sf::IntRect area, sf::RenderWindow & window) : bool
++isSpriteClicked(sf::Sprite sprite, sf::Mouse::Button button, sf::Event & event, sf::RenderWindow & window) : bool
++isWindowClosed(sf::Event & event) : bool
+__
+-lockMouseClicked : bool
+}
+enum "MusicStatus" as C_0008159535231821289035
+enum C_0008159535231821289035 {
+Stopped
+Paused
+Playing
+NotExisting
+}
+class "MusicManager" as C_0013018981818162392349
+class C_0013018981818162392349 {
++MusicManager() : void
++~MusicManager() = default : void
+..
++enableLoop(bool enable) : void
++isMuted() : bool
++isPlaying() const : bool
++mute() : void
++openMusic(std::string filepath) : void
++play() : void
++setVolume(float volume) : void
++unMute() : void
+__
+-isMusicMuted : bool
+-music : sf::Music
+-status : MusicStatus
+-volume : float
+}
+class "AppData" as C_0002878685250157375085
+class C_0002878685250157375085 {
+__
++assets : AssetManager
++chats : ChatManager
++input : InputManager
++machine : StateMachine
++music : MusicManager
++window : sf::RenderWindow
+}
+class "App" as C_0018282610363821501524
+class C_0018282610363821501524 {
++App(int width, int height, std::string title) : void
++~App() : void
+..
+-run() : void
+__
+-clock : sf::Clock
+-data : AppDataRef
+-dt : const float
+}
 class "ThreadManager<ResultType>" as C_0008931800749696307144
 class C_0008931800749696307144 {
 +ThreadManager() : void
@@ -280,33 +290,44 @@ class C_0010767441053444769080 {
 +update(float dt) : void
 __
 -activateScrolling : bool
--chatBox : ChatBox
+-chatButton : sf::Sprite
 -currentMessageLineCounter : unsigned int
 -data : AppDataRef
+-enterButton : sf::Sprite
 -inputBox : InputBox
 -inputBoxArea : sf::IntRect
 -inputBoxBackground : sf::RectangleShape
 -llmMessageBox : MessageBox
--messages : ollama::messages
 -ollamathread : ThreadManager<void>
 -promptInput : std::string
 -streamingCounter : unsigned int
 -temp : std::string
 -userMessageBox : MessageBox
 }
+class "ChatSelectionState" as C_0012132415960241293045
+class C_0012132415960241293045 {
++ChatSelectionState(AppDataRef data) : void
++~ChatSelectionState() = default : void
+..
++chatExists(std::string name) : bool
+-deleteChat(std::string name) : void
++draw(float dt) : void
++handleInput() : void
++init() : void
+-newChat(std::string name) : void
++update(float dt) : void
+__
+-convAreas : std::map<std::string,sf::IntRect>
+-convBackgrounds : std::map<std::string,sf::RectangleShape>
+-conversations : std::map<std::string,InputBox>
+-data : AppDataRef
+-deleteButtons : std::map<std::string,sf::Sprite>
+}
 C_0013797594922140478519 ..> C_0014537214693256561526
 C_0013531716651485178890 ..> C_0001914138303902600425
 C_0006027996033599488936 ..|> C_0008758017994193186544
 C_0010335427585328718123 ..> C_0000025472147750072530
 C_0010335427585328718123 ..|> C_0008758017994193186544
-C_0013018981818162392349 o-- C_0008159535231821289035 : -status
-C_0002878685250157375085 o-- C_0013531716651485178890 : +machine
-C_0002878685250157375085 o-- C_0011218267209626974551 : +input
-C_0002878685250157375085 o-- C_0007056669967416308786 : +assets
-C_0002878685250157375085 o-- C_0013018981818162392349 : +music
-C_0007275061059561579929 ..> C_0002878685250157375085
-C_0001914138303902600425 <|-- C_0007275061059561579929
-
 C_0006075958540417117804 <.. C_0016724738070354194970 : +<<friend>>
 C_0006075958540417117804 <|-- C_0017227335679142879242
 
@@ -317,16 +338,25 @@ C_0006075958540417117804 <|-- C_0014537214693256561526
 C_0016724738070354194970 ..> C_0014537214693256561526
 C_0013797594922140478519 <|-- C_0016724738070354194970
 
+C_0014275120282245944757 ..> C_0016724738070354194970
+C_0013018981818162392349 o-- C_0008159535231821289035 : -status
+C_0002878685250157375085 o-- C_0013531716651485178890 : +machine
+C_0002878685250157375085 o-- C_0011218267209626974551 : +input
+C_0002878685250157375085 o-- C_0007056669967416308786 : +assets
+C_0002878685250157375085 o-- C_0013018981818162392349 : +music
+C_0002878685250157375085 o-- C_0014275120282245944757 : +chats
 C_0002020853330831851796 ..|> C_0008931800749696307144
 C_0010767441053444769080 ..> C_0002878685250157375085
 C_0010767441053444769080 o-- C_0006905555226801011843 : -inputBox
-C_0010767441053444769080 o-- C_0016724738070354194970 : -chatBox
 C_0010767441053444769080 o-- C_0014537214693256561526 : -userMessageBox
 C_0010767441053444769080 o-- C_0014537214693256561526 : -llmMessageBox
 C_0010767441053444769080 o-- C_0002020853330831851796 : -ollamathread
 C_0001914138303902600425 <|-- C_0010767441053444769080
 
+C_0012132415960241293045 ..> C_0002878685250157375085
+C_0001914138303902600425 <|-- C_0012132415960241293045
+
 
 'Generated with clang-uml, version 0.5.6
-'LLVM version clang version 19.1.4 (Fedora 19.1.4-1.fc41)
+'LLVM version clang version 19.1.5 (Fedora 19.1.5-1.fc41)
 @enduml
