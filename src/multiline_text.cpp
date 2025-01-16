@@ -38,10 +38,10 @@ void MultilineText::write(const std::string &text) {
             charCounter = 0;
         }
         if (c != '\n') {
-            // never begin a line with a space
+            // never begin a line with a space except if it is the first
             // On supprime que le premier espace et on garde les autres
             charCounter++;
-            if (charCounter == 1 && c == ' ') {
+            if (lineCounter != 0 && charCounter == 1 && c == ' ') {
                 continue;
             }
             line += c;
@@ -52,7 +52,7 @@ void MultilineText::write(const std::string &text) {
         sf::Text t;
         t.setFont(this->font);
         // remove beginning space
-        if (line[0] == ' ') {
+        if (line[0] == ' ' && lineCounter != 0) {
             line = line.substr(1);
         }
         t.setString(line);
@@ -170,7 +170,7 @@ void ScrollTextInPlace::write(const std::string &text) {
             // never begin a line with a space
             // On supprime que le premier espace et on garde les autres
             charCounter++;
-            if (charCounter == 1 && c == ' ') {
+            if (lineCounter != 0 && charCounter == 1 && c == ' ') {
                 continue;
             }
             line += c;
@@ -181,7 +181,7 @@ void ScrollTextInPlace::write(const std::string &text) {
         sf::Text t;
         t.setFont(this->font);
         // remove beginning space
-        if (line[0] == ' ') {
+        if (line[0] == ' ' && lineCounter != 0) {
             line = line.substr(1);
         }
         t.setString(line);
@@ -312,7 +312,7 @@ void MessageBox::write(const std::string &text) {
             // never begin a line with a space
             // On supprime que le premier espace et on garde les autres
             charCounter++;
-            if (charCounter == 1 && c == ' ') {
+            if (lineCounter != 0 && charCounter == 1 && c == ' ') {
                 continue;
             }
             line += c;
@@ -323,7 +323,7 @@ void MessageBox::write(const std::string &text) {
         sf::Text t;
         t.setFont(this->font);
         // remove beginning space
-        if (line[0] == ' ') {
+        if (line[0] == ' ' && lineCounter != 0) {
             line = line.substr(1);
         }
         t.setString(line);

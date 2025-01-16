@@ -79,6 +79,8 @@ class OllamaState : public State {
     private:
     void handleScrolling(const sf::Event &event);
 
+    void sendMessage(sf::Event &event);
+
     bool activateScrolling; // For scrolling up and down the chatbox
 
     AppDataRef data;
