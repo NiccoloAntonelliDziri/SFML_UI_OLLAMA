@@ -8,9 +8,9 @@ void ChatSelectionState::init() {
         this->data->chats.addChat("Mario");
     this->newChat("Mario");
 
-    if (!this->data->chats.chatExists("Chat2"))
-        this->data->chats.addChat("Chat2");
-    this->newChat("Chat2");
+    if (!this->data->chats.chatExists("Trump"))
+        this->data->chats.addChat("Trump");
+    this->newChat("Trump");
 
     if (!this->data->chats.chatExists("Chat3"))
         this->data->chats.addChat("Chat3");
@@ -32,7 +32,6 @@ void ChatSelectionState::init() {
     // Position des conversations, des boutons delete et des boutons
     int compteur = 0;
     for (auto &name : this->data->chats.getChatNames()) {
-        std::cout << name << std::endl;
 
         // Position des conversations, des boutons delete et des boutons more
         this->convBackgrounds[name].setPosition(
@@ -74,9 +73,9 @@ void ChatSelectionState::handleInput() {
                 // go back to the chat
                 this->data->machine.removeState();
 
-                for (auto &chat : this->data->chats.getChats()) {
-                    std::cout << chat.first << std::endl;
-                }
+                // for (auto &chat : this->data->chats.getChats()) {
+                //     std::cout << chat.first << std::endl;
+                // }
 
                 this->data->window.setTitle(block.first);
             }
