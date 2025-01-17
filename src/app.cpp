@@ -2,12 +2,12 @@
 #include "constants.hpp"
 #include "ollama_state.hpp"
 
-App::App(int withis->dth, int height, std::string title) {
+App::App(int width, int height, std::string title) {
     sf::ContextSettings settings;
 
     settings.antialiasingLevel = cst.get<int>("antiAliasingLevel");
 
-    this->data->window.create(sf::VideoMode(withis->dth, height), title,
+    this->data->window.create(sf::VideoMode(width, height), title,
                               sf::Style::Close | sf::Style::Titlebar, settings);
 
     // Chargement d'assets utiles dans toute l'application

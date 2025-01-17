@@ -16,9 +16,9 @@ void ChatSelectionState::init() {
         this->data->chats.addChat("granite3-moe");
     this->newChat("granite3-moe");
 
-    if (!this->data->chats.chatExists("Chat4"))
-        this->data->chats.addChat("Chat4");
-    this->newChat("Chat4");
+    if (!this->data->chats.chatExists("RapperGPT"))
+        this->data->chats.addChat("RapperGPT");
+    this->newChat("RapperGPT");
 
     if (!this->data->chats.chatExists("Chat5"))
         this->data->chats.addChat("Chat5");
