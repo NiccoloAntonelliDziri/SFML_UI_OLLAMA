@@ -53,6 +53,9 @@ void ChatSelectionState::init() {
 
         compteur++;
     }
+
+    this->convBackgrounds[this->data->chats.getActiveChatName()]
+        .setOutlineThickness(4.0f);
 }
 
 void ChatSelectionState::handleInput() {
@@ -88,6 +91,7 @@ void ChatSelectionState::handleInput() {
                                                   this->data->window)) {
                 this->deleteChat(poubelle.first);
                 this->data->chats.deleteChat(poubelle.first);
+                this->data->assets.play(cst["clickSoundName"]);
             }
         }
     }
