@@ -60,7 +60,6 @@ void OllamaState::handleInput() {
              this->data->input.isSpriteClicked(this->enterButton,
                                                sf::Mouse::Left, event,
                                                this->data->window))) {
-            std::cout << "SOUND" << std::endl;
             this->data->assets.play(cst["errorSoundName"]);
         }
         // Switch to chat selection state
@@ -71,9 +70,7 @@ void OllamaState::handleInput() {
                 this->data->machine.addState(
                     std::make_unique<ChatSelectionState>(this->data), false);
             } else {
-                std::cout << "SOUND" << std::endl;
                 this->data->assets.play(cst["errorSoundName"]);
-                std::cerr << "Thread is not ready to switch state" << std::endl;
             }
         }
         // InputBox is empty
@@ -201,9 +198,7 @@ void OllamaState::sendMessage(sf::Event &event) {
         this->promptInput.clear();
         this->inputBox.write("");
     } else {
-        std::cout << "SOUND" << std::endl;
         this->data->assets.play(cst["errorSoundName"]);
-        std::cerr << "Thread is not ready" << std::endl;
     }
 }
 

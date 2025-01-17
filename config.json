@@ -10,7 +10,7 @@
     },
     "antiAliasingLevel": 8,
     "initialMusicVolume": 100,
-    "errorSoundPath": "assets/sounds/253168__suntemple__sfx-ui-button-click.wav",
+    "errorSoundPath": "assets/sounds/540568__eminyildirim__ui-pop-up.wav",
     "errorSoundName": "errorSound",
     "clickSoundPath": "assets/sounds/574592__tissman__menu-move3.wav",
     "clickSoundName": "clickSound",

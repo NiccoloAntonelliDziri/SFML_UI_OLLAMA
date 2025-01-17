@@ -81,6 +81,7 @@ void ChatSelectionState::handleInput() {
                 // }
 
                 this->data->window.setTitle(block.first);
+                this->data->assets.play(cst["clickSoundName"]);
             }
         }
 
@@ -92,6 +93,7 @@ void ChatSelectionState::handleInput() {
                 this->deleteChat(poubelle.first);
                 this->data->chats.deleteChat(poubelle.first);
                 this->data->assets.play(cst["clickSoundName"]);
+                this->data->assets.setSpriteTransparency(poubelle.second, 127);
             }
         }
     }

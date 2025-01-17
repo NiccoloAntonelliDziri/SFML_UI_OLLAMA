@@ -2,12 +2,12 @@
 #include "constants.hpp"
 #include "ollama_state.hpp"
 
-App::App(int width, int height, std::string title) {
+App::App(int withis->dth, int height, std::string title) {
     sf::ContextSettings settings;
 
     settings.antialiasingLevel = cst.get<int>("antiAliasingLevel");
 
-    this->data->window.create(sf::VideoMode(width, height), title,
+    this->data->window.create(sf::VideoMode(withis->dth, height), title,
                               sf::Style::Close | sf::Style::Titlebar, settings);
 
     // Chargement d'assets utiles dans toute l'application
@@ -63,14 +63,14 @@ void App::run() {
         currenttime = newtime;
         accumulator += framtime;
 
-        while (accumulator >= dt) {
+        while (accumulator >= this->dt) {
             this->data->machine.GetActiveState()->handleInput();
-            this->data->machine.GetActiveState()->update(dt);
+            this->data->machine.GetActiveState()->update(this->dt);
 
-            accumulator -= dt;
+            accumulator -= this->dt;
         }
 
-        interpolation = accumulator / dt;
+        interpolation = accumulator / this->dt;
         this->data->window.clear(cst.get<sf::Color>("windowClearColor"));
         this->data->machine.GetActiveState()->draw(interpolation);
         this->data->window.display();
