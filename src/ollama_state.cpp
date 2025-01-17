@@ -52,6 +52,17 @@ void OllamaState::handleInput() {
         if (this->data->input.isWindowClosed(event)) {
             this->data->window.close();
         }
+        // If text is empty or default and enter key pressed or button click,
+        // sound
+        if ((this->promptInput.empty() ||
+             this->promptInput == cst["inputDefaultText"]) &&
+            (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) ||
+             this->data->input.isSpriteClicked(this->enterButton,
+                                               sf::Mouse::Left, event,
+                                               this->data->window))) {
+            std::cout << "SOUND" << std::endl;
+            this->data->assets.play(cst["errorSoundName"]);
+        }
         // Switch to chat selection state
         if (this->data->input.isSpriteClicked(this->chatButton, sf::Mouse::Left,
                                               event, this->data->window)) {
@@ -60,6 +71,7 @@ void OllamaState::handleInput() {
                 this->data->machine.addState(
                     std::make_unique<ChatSelectionState>(this->data), false);
             } else {
+                std::cout << "SOUND" << std::endl;
                 this->data->assets.play(cst["errorSoundName"]);
                 std::cerr << "Thread is not ready to switch state" << std::endl;
             }
@@ -84,8 +96,6 @@ void OllamaState::handleInput() {
         // Only if it is the text entered event
         if (event.type == sf::Event::TextEntered)
             this->inputBox.typedOn(event);
-        else
-            this->data->assets.play(cst["errorSoundName"]);
 
         // If Key pressed and prompt is not empty and model is loaded
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) ||
@@ -103,27 +113,6 @@ void OllamaState::handleInput() {
 
             this->promptInput = this->inputBox.getText();
         }
-
-        // if (this->data->input.isSpriteClicked(this->enterButton,
-        //                                       sf::Mouse::Left, event,
-        //                                       this->data->window)) {
-        //     this->data->assets.play(cst["clickSoundName"]);
-        // }
-
-        // if (event.type == sf::Event::TextEntered ||
-        //     this->data->input.isSpriteClicked(this->enterButton,
-        //                                       sf::Mouse::Left, event,
-        //                                       this->data->window)) {
-        //     std::cout << "|" << this->inputBox.getText() << "|" << std::endl;
-        //     if (this->inputBox.getText() == cst["inputDefaultText"]) {
-        //         std::cout << "DEFAULT: " << cst["inputDefaultText"]
-        //                   << std::endl;
-        //         this->inputBox.write("");
-        //     }
-        //     this->inputBox.setColor(cst.get<sf::Color>("textColor"));
-        //
-        //     // std::cout << this->promptInput << std::endl;
-        // }
     }
 }
 
@@ -212,6 +201,7 @@ void OllamaState::sendMessage(sf::Event &event) {
         this->promptInput.clear();
         this->inputBox.write("");
     } else {
+        std::cout << "SOUND" << std::endl;
         this->data->assets.play(cst["errorSoundName"]);
         std::cerr << "Thread is not ready" << std::endl;
     }

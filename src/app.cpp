@@ -24,6 +24,9 @@ App::App(int width, int height, std::string title) {
     this->data->assets.loadTexture(cst["deleteButtonName"],
                                    cst["deleteButtonPath"]);
 
+    this->data->assets.loadSound(cst["errorSoundName"], cst["errorSoundPath"]);
+    this->data->assets.loadSound(cst["clickSoundName"], cst["clickSoundPath"]);
+
     // ajoute le premier état à la pile
     this->data->machine.addState(std::make_unique<OllamaState>(this->data));
 
