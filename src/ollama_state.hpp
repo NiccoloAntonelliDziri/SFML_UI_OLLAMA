@@ -92,6 +92,8 @@ class OllamaState : public State {
     sf::RectangleShape inputBoxBackground; // Rectangle autour du texte input
     sf::IntRect inputBoxArea;              // For easy input detection
 
+    int scrollCounter; // For the scrolling effect
+
     // ChatBox chatBox;
     // ollama::messages messages;
 

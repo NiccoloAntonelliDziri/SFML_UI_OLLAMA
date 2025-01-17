@@ -178,6 +178,8 @@ class ChatBox : public std::vector<MessageBox>,
     // Call `calculateTotalNumberLines` to update the total number of lines.
     inline int getTotalNumberLines() const { return this->totalNumberLines; }
 
+    inline int getOffset() const { return this->offset; }
+
     void updateLinesToDraw();
 
     // Add a message to the ChatBox.

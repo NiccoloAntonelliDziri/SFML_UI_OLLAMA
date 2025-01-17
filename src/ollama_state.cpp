@@ -100,8 +100,16 @@ void OllamaState::handleInput() {
                                               sf::Mouse::Left, event,
                                               this->data->window)) {
             if (!this->promptInput.empty() &&
-                this->promptInput != cst["inputDefaultText"])
+                this->promptInput != cst["inputDefaultText"]) {
+
+                // Scroll to the bottom before sending message and response
+                int offset = this->data->chats.getActiveChatBox().getOffset();
+                for (int i = 0; i < offset - 1; i++) {
+                    this->data->chats.getActiveChatBox().scrollDownMsg();
+                }
+
                 this->sendMessage(event);
+            }
         } else {
 
             if (this->promptInput.empty() &&
@@ -216,7 +224,7 @@ void OllamaState::handleScrolling(const sf::Event &event) {
                 // this->chatBox.scrollUpMsg();
                 this->data->chats.getActiveChatBox().scrollUpMsg();
             } else {
-                this->inputBox.scrollUp();
+                this->inputBox.scrollDown();
             }
 
         } else if (event.key.code == sf::Keyboard::Down) {
@@ -228,7 +236,7 @@ void OllamaState::handleScrolling(const sf::Event &event) {
                 // this->chatBox.scrollDownMsg();
                 this->data->chats.getActiveChatBox().scrollDownMsg();
             } else {
-                this->inputBox.scrollDown();
+                this->inputBox.scrollUp();
             }
         }
     }
@@ -241,18 +249,18 @@ void OllamaState::handleScrolling(const sf::Event &event) {
                                                  this->data->window)) {
                 if (event.mouseWheelScroll.delta > 0) {
                     // this->chatBox.scrollUpMsg();
-                    this->data->chats.getActiveChatBox().scrollUpMsg();
+                    this->data->chats.getActiveChatBox().scrollDownMsg();
                 } else {
                     // this->chatBox.scrollDownMsg();
-                    this->data->chats.getActiveChatBox().scrollDownMsg();
+                    this->data->chats.getActiveChatBox().scrollUpMsg();
                 }
             } else {
                 this->inputBox.setColor(
                     cst.get<sf::Color>("textColorNotActive"));
                 if (event.mouseWheelScroll.delta > 0) {
-                    this->inputBox.scrollUp();
-                } else {
                     this->inputBox.scrollDown();
+                } else {
+                    this->inputBox.scrollUp();
                 }
             }
         }
