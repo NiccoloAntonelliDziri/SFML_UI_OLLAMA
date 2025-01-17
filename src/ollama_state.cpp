@@ -66,7 +66,7 @@ void OllamaState::handleInput() {
         if (this->data->input.isSpriteClicked(this->chatButton, sf::Mouse::Left,
                                               event, this->data->window)) {
             if (this->ollamathread.isReady()) {
-                // this->data->assets.play(cst["clickSoundName"]);
+                this->data->assets.play(cst["clickSoundName"]);
                 this->data->machine.addState(
                     std::make_unique<ChatSelectionState>(this->data), false);
             } else {
