@@ -52,16 +52,20 @@ void OllamaState::handleInput() {
         if (this->data->input.isWindowClosed(event)) {
             this->data->window.close();
         }
-        // If text is empty or default and enter key pressed or button click,
-        // sound
-        if ((this->promptInput.empty() ||
-             this->promptInput == cst["inputDefaultText"]) &&
-            (sf::Keyboard::isKeyPressed(sf::Keyboard::Return) ||
+
+        // If pressed enter or clicked on enter button while the input is empty
+        // or default text then play error sound
+        if (((event.type == sf::Event::KeyPressed &&
+              event.key.code == sf::Keyboard::Return) ||
              this->data->input.isSpriteClicked(this->enterButton,
                                                sf::Mouse::Left, event,
-                                               this->data->window))) {
+                                               this->data->window)) &&
+            (this->promptInput.empty() ||
+             this->promptInput == cst["inputDefaultText"])) {
+            std::cout << "Empty input" << std::endl;
             this->data->assets.play(cst["errorSoundName"]);
         }
+
         // Switch to chat selection state
         if (this->data->input.isSpriteClicked(this->chatButton, sf::Mouse::Left,
                                               event, this->data->window)) {
@@ -206,6 +210,7 @@ void OllamaState::sendMessage(sf::Event &event) {
         this->promptInput.clear();
         this->inputBox.write("");
     } else {
+        std::cout << "SOUND: thread not ready AAAAAAAAAAA" << std::endl;
         this->data->assets.play(cst["errorSoundName"]);
     }
 }
