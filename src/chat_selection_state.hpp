@@ -26,6 +26,7 @@ class ChatSelectionState : public State {
 
     std::map<std::string, InputBox> conversations;
     std::map<std::string, sf::Sprite> deleteButtons;
+    std::map<std::string, bool> deleteButtonActive;
     std::map<std::string, sf::IntRect> convAreas;
     std::map<std::string, sf::RectangleShape> convBackgrounds;
 };

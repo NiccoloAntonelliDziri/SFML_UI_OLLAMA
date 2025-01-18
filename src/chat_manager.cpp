@@ -1,8 +1,7 @@
 #include "chat_manager.hpp"
 
 bool ChatManager::chatExists(const std::string name) {
-    return this->chats.contains(name) && this->messages.contains(name) &&
-           this->chats[name].getTotalNumberLines() == 0;
+    return this->chats.contains(name) && this->messages.contains(name);
 }
 
 void ChatManager::deleteChat(const std::string name) {

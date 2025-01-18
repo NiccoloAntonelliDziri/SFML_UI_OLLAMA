@@ -54,6 +54,19 @@ void ChatSelectionState::init() {
         compteur++;
     }
 
+    // If some messages are sent in the chat, activate the delete Button
+    for (auto &chat : this->data->chats.getChats()) {
+        if (chat.second.size() > 0) {
+            this->deleteButtons[chat.first].setColor(
+                cst.get<sf::Color>("textColor"));
+            this->deleteButtonActive[chat.first] = true;
+        } else {
+            this->deleteButtons[chat.first].setColor(
+                cst.get<sf::Color>("textColorNotActive"));
+            this->deleteButtonActive[chat.first] = false;
+        }
+    }
+
     this->convBackgrounds[this->data->chats.getActiveChatName()]
         .setOutlineThickness(4.0f);
 }
@@ -89,11 +102,15 @@ void ChatSelectionState::handleInput() {
         for (auto &poubelle : this->deleteButtons) {
             if (this->data->input.isSpriteClicked(poubelle.second,
                                                   sf::Mouse::Left, event,
-                                                  this->data->window)) {
+                                                  this->data->window) &&
+                this->deleteButtonActive[poubelle.first]) {
+
                 this->deleteChat(poubelle.first);
                 this->data->chats.deleteChat(poubelle.first);
                 this->data->assets.play(cst["clickSoundName"]);
-                this->data->assets.setSpriteTransparency(poubelle.second, 127);
+                this->deleteButtons[poubelle.first].setColor(
+                    cst.get<sf::Color>("textColorNotActive"));
+                this->deleteButtonActive[poubelle.first] = false;
             }
         }
     }
