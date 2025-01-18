@@ -27,8 +27,10 @@ class ThreadManager {
             });
         } else {
             // Initialize thread with lambda function
-            this->thread = std::thread(
-                [this, f, args...]() { this->promise.set_value(f(args...)); });
+            this->thread = std::thread([this, f, args...]() {
+                this->promise.set_value(f(args...));
+                this->isResultReady = true;
+            });
         }
     };
 

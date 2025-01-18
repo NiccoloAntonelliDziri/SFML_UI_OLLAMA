@@ -43,12 +43,6 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     inline sf::Vector2f getPosition() const { return this->position; }
     inline int getNumberLines() const { return this->numberLines; }
 
-    // Operator << is converted to a string
-    std::ostream &operator<<(std::ostream &os) {
-        os << this->text;
-        return os;
-    }
-
     friend class ChatBox;
 
     private:
