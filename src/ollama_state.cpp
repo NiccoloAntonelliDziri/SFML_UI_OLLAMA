@@ -60,9 +60,8 @@ void OllamaState::handleInput() {
              this->data->input.isSpriteClicked(this->enterButton,
                                                sf::Mouse::Left, event,
                                                this->data->window)) &&
-            (this->promptInput.empty() ||
+            (this->inputBox.getText().empty() ||
              this->promptInput == cst["inputDefaultText"])) {
-            std::cout << "Empty input" << std::endl;
             this->data->assets.play(cst["errorSoundName"]);
         }
 
@@ -210,7 +209,6 @@ void OllamaState::sendMessage(sf::Event &event) {
         this->promptInput.clear();
         this->inputBox.write("");
     } else {
-        std::cout << "SOUND: thread not ready AAAAAAAAAAA" << std::endl;
         this->data->assets.play(cst["errorSoundName"]);
     }
 }
