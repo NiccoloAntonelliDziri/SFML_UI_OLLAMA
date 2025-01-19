@@ -15,8 +15,8 @@ ollama pull granite3-moe
 - Create the custom AI model from the modelfiles provided in the `modelfiles` directory with the script:
 
 ```
-chmod +x create_model.sh
-./create_model.sh
+chmod +x create_models.sh
+./create_models.sh
 ```
 
 - Compile and run the app:
