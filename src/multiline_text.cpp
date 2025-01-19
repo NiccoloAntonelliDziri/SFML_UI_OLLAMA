@@ -457,3 +457,7 @@ void ChatBox::scrollDownMsg() {
     this->offset--;
     this->updateLinesToDraw();
 }
+std::string operator<<(std::string &lhs, const MultilineText &rhs) {
+    lhs = rhs.getText();
+    return lhs;
+}

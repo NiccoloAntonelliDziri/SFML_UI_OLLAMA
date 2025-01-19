@@ -67,6 +67,8 @@ class MultilineText : public sf::Drawable, public sf::Transformable {
     int lineSpacing;
 };
 
+std::string operator<<(std::string &lhs, const MultilineText &rhs);
+
 // This class is a MultilineText that can be scrolled.
 // Aka not showing all the text at once.
 // scroll is automatic

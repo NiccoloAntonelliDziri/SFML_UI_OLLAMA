@@ -119,7 +119,8 @@ void OllamaState::handleInput() {
                 event.type == sf::Event::TextEntered)
                 this->inputBox.write(cst["inputDefaultText"]);
 
-            this->promptInput = this->inputBox.getText();
+            // this->promptInput = this->inputBox.getText();
+            this->promptInput << this->inputBox;
         }
     }
 }
