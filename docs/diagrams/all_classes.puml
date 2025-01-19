@@ -88,8 +88,6 @@ class C_0006075958540417117804 {
 +MultilineText() = default : void
 +MultilineText(const sf::Font & font, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
-+operator<<(std::ostream & os) : std::ostream &
-..
 -draw(sf::RenderTarget & target, sf::RenderStates states) const : void
 +getCharacterSize() const : int
 +getColor() const : sf::Color
@@ -149,8 +147,10 @@ class C_0014537214693256561526 {
 +MessageBox() = default : void
 +MessageBox(const sf::Font & font, std::string role, int numberCharacterLimit = cst.get<int>("maxNumberCharacterLimit"), int characterSize = cst.get<int>("fontSize")) : void
 ..
++getRole() const : std::string
 +scrollDown() : void
 +scrollUp() : void
++setRole(const std::string & role) : void
 +write(const std::string & text) : void
 __
 -role : std::string
@@ -162,6 +162,7 @@ class C_0016724738070354194970 {
 ..
 +addMessage(const MessageBox & message) : void
 -draw(sf::RenderTarget & target, sf::RenderStates states) const : void
++getOffset() const : int
 +getTotalNumberLines() const : int
 +scrollDown(int begin = 0, int end = -1) : void
 +scrollDownMsg() : void
@@ -287,6 +288,7 @@ class C_0010767441053444769080 {
 +handleInput() : void
 -handleScrolling(const sf::Event & event) : void
 +init() : void
+-sendMessage(sf::Event & event) : void
 +update(float dt) : void
 __
 -activateScrolling : bool
@@ -300,6 +302,7 @@ __
 -llmMessageBox : MessageBox
 -ollamathread : ThreadManager<void>
 -promptInput : std::string
+-scrollCounter : int
 -streamingCounter : unsigned int
 -temp : std::string
 -userMessageBox : MessageBox
@@ -321,6 +324,7 @@ __
 -convBackgrounds : std::map<std::string,sf::RectangleShape>
 -conversations : std::map<std::string,InputBox>
 -data : AppDataRef
+-deleteButtonActive : std::map<std::string,bool>
 -deleteButtons : std::map<std::string,sf::Sprite>
 }
 C_0013797594922140478519 ..> C_0014537214693256561526
