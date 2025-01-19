@@ -20,9 +20,9 @@ void ChatSelectionState::init() {
         this->data->chats.addChat("RapperGPT");
     this->newChat("RapperGPT");
 
-    if (!this->data->chats.chatExists("Chat5"))
-        this->data->chats.addChat("Chat5");
-    this->newChat("Chat5");
+    if (!this->data->chats.chatExists("NinjaTurtle"))
+        this->data->chats.addChat("NinjaTurtle");
+    this->newChat("NinjaTurtle");
 
     sf::Vector2u screen = this->data->window.getSize();
     sf::Vector2u convSize = cst.get<sf::Vector2u>("conversationBoxSize");
